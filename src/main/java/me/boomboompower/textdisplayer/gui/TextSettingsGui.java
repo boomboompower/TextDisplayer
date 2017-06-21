@@ -51,10 +51,13 @@ public class TextSettingsGui extends GuiScreen {
 
     private GuiButton update;
     private GuiButton remove;
-
+    
+    private GuiScreen previous;
+    
     private Message message;
 
-    public TextSettingsGui(Message input) {
+    public TextSettingsGui(GuiScreen screen, Message input) {
+        this.previous = screen;
         this.message = input;
     }
 
@@ -90,7 +93,11 @@ public class TextSettingsGui extends GuiScreen {
 
     @Override
     protected void keyTyped(char c, int key)  {
-        text.textboxKeyTyped(c, key);
+        if (key == 1) {
+            mc.displayGuiScreen(previous);
+        } else {
+            text.textboxKeyTyped(c, key);
+        }
     }
 
     @Override
@@ -113,11 +120,11 @@ public class TextSettingsGui extends GuiScreen {
             case 1:
                 message.setMessage(this.text.getText());
                 sendChatMessage(String.format("Updated %s!", message.getName()));
-                mc.displayGuiScreen(null);
+                mc.displayGuiScreen(previous);
                 break;
             case 2:
                 message.remove();
-                mc.displayGuiScreen(null);
+                mc.displayGuiScreen(previous);
             case 3:
                 this.message.setUseShadow(!this.message.useShadow());
                 button.displayString = "Use Shadow: " + (this.message.useShadow() ? ENABLED : DISABLED);
