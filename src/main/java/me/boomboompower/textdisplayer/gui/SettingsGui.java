@@ -97,9 +97,8 @@ public class SettingsGui extends GuiScreen {
         clear.enabled = TextDisplayer.loader.getMessages().size() > 0;
 
         text.drawTextBox();
-        super.drawScreen(x, y, ticks);
-
         TextDisplayer.events.renderDisplay(true);
+        super.drawScreen(x, y, ticks);
     }
 
     @Override
@@ -121,7 +120,7 @@ public class SettingsGui extends GuiScreen {
         if (button == 0) {
             for (Message m : TextDisplayer.loader.getMessages()) {
                 if (this.lastClickedName.equals(m.getName())) {
-                    new TextSettingsGui(m).display();
+                    new TextSettingsGui(this, m).display();
                     return;
                 }
                 int startX = m.getX();
