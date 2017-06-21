@@ -26,6 +26,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TextCommand implements ICommand {
@@ -49,8 +50,8 @@ public class TextCommand implements ICommand {
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
             new SettingsGui().display();
-        } else if (args[0] != null) {
-            new SettingsGui(args[0]).display();
+        } else {
+            new SettingsGui(get(args)).display();
         }
     }
 
@@ -72,5 +73,14 @@ public class TextCommand implements ICommand {
     @Override
     public int compareTo(ICommand o) {
         return 0;
+    }
+
+    private String get(String[] args) {
+        StringBuilder builder = new StringBuilder();
+        for (String s : args) {
+            builder.append(s);
+            builder.append(" ");
+        }
+        return builder.toString().trim();
     }
 }

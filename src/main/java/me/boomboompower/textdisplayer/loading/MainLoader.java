@@ -17,6 +17,7 @@
 
 package me.boomboompower.textdisplayer.loading;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
@@ -25,7 +26,6 @@ import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,8 +50,6 @@ public class MainLoader {
             mainDir.mkdirs();
         }
 
-        System.out.println(Arrays.toString(mainDir.listFiles()));
-
         BufferedReader f;
         List options;
 
@@ -60,18 +58,13 @@ public class MainLoader {
                 f = new BufferedReader(new FileReader(file));
                 options = f.lines().collect(Collectors.toList());
 
-                if (options.get(0) != null) {
+                if (options.size() > 0) {
                     messages.add(new Message(new JsonParser().parse((String) options.get(0)).getAsJsonObject()));
                 }
-
-                System.out.println(f);
-                System.out.println(options);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
-        System.out.println(messages);
     }
 
     public File getMainDir() {
@@ -88,9 +81,10 @@ public class MainLoader {
         }
     }
 
-    public void create(String name, String message) {
+    public void create(String name, String message, boolean useShadow) {
         if (has(name, message)) return; // Message already made...
-        messages.add(new Message(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20));
+
+        messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow)));
     }
 
     private boolean has(String name, String message) {
@@ -103,5 +97,15 @@ public class MainLoader {
             }
         }
         return has;
+    }
+
+    private JsonObject create(String name, String message, int x, int y, boolean shadow) {
+        JsonObject o = new JsonObject();
+        o.addProperty("name", name);
+        o.addProperty("message", message);
+        o.addProperty("useshadow", shadow);
+        o.addProperty("x", x);
+        o.addProperty("y", y);
+        return o.getAsJsonObject();
     }
 }

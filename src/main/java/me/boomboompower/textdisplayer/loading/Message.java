@@ -18,12 +18,14 @@
 package me.boomboompower.textdisplayer.loading;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.utils.ChatColor;
+import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.MathHelper;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 
@@ -37,32 +39,21 @@ public class Message {
     private String name;
     private String message;
 
+    private boolean useShadow = false;
+
     private int x;
     private int y;
 
     public boolean dragging = false;
 
-    /*
-     * Easy way of creating messages without going through code-breaking checks
-     *
-     * This is used so texts can be created
-     */
-    protected Message(String name, String message, int x, int y) {
-        this.name = name;
-        this.message = message;
-        this.x = x;
-        this.y = y;
-
-        fileLocation = TextDisplayer.loader.getMainDir().getPath() + "\\" + this.name + ".info";
-    }
-
     public Message(JsonObject object) {
         this.name = object.has("name") ? object.get("name").getAsString() : "unknown";
         this.message = object.has("message") ? object.get("message").getAsString() : "unknown";
-        this.x = object.has("x") ? object.get("x").getAsInt() : 10;
-        this.y = object.has("y") ? object.get("y").getAsInt() : 10;
+        this.useShadow = object.has("useshadow") && object.get("useshadow").getAsBoolean();
+        this.x = object.has("x") ? object.get("x").getAsInt() : 0;
+        this.y = object.has("y") ? object.get("y").getAsInt() : 0;
 
-        fileLocation = TextDisplayer.loader.getMainDir().getAbsolutePath() + this.name + ".info";
+        fileLocation = TextDisplayer.loader.getMainDir().getPath() + "\\" + formatName(this.name) + ".info";
     }
 
     /*
@@ -74,18 +65,24 @@ public class Message {
     }
 
     public void save() {
-        JsonObject config = new JsonObject();
-        File configFile = new File(fileLocation);
+        if (this.name == null || this.message == null) {
+            return;
+        }
+
         try {
             if (!TextDisplayer.loader.getMainDir().exists()) {
                 TextDisplayer.loader.getMainDir().mkdirs();
             }
+
+            JsonObject config = new JsonObject();
+            File configFile = new File(fileLocation);
 
             configFile.createNewFile();
             FileWriter writer = new FileWriter(configFile);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             config.addProperty("name", this.name);
             config.addProperty("message", this.message);
+            config.addProperty("useshadow", this.useShadow);
             config.addProperty("x", this.x);
             config.addProperty("y", this.y);
 
@@ -99,6 +96,26 @@ public class Message {
         }
     }
 
+    public void remove() {
+        if (this.name == null || this.message == null) {
+            return;
+        }
+
+        boolean failed = false;
+
+        try {
+            FileUtils.forceDelete(new File(fileLocation));
+            TextDisplayer.loader.getMessages().remove(this);
+        } catch (Exception ex) {
+            failed = true;
+        }
+        System.out.println(failed ? String.format("Could not delete \"%s\"!", this.name) : String.format("Deleted \"%s\"!", this.name));
+        GlobalUtils.sendMessage(failed ?
+                String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + this.name + ChatColor.RED) :
+                String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + this.name + ChatColor.GREEN), false
+        );
+    }
+
     /*
      * GETTERS
      */
@@ -108,7 +125,11 @@ public class Message {
     }
 
     public String getMessage() {
-        return ChatColor.translateAlternateColorCodes(this.message);
+        return ChatColor.translateAlternateColorCodes(parse(this.message));
+    }
+
+    public boolean useShadow() {
+        return this.useShadow;
     }
 
     public int getX() {
@@ -120,7 +141,7 @@ public class Message {
     }
 
     public int getStringWidth() {
-        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(message));
+        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(parse(this.message)));
     }
 
     /*
@@ -128,7 +149,11 @@ public class Message {
      */
 
     public void setMessage(String message) {
-        this.message = ChatColor.translateAlternateColorCodes(message);
+        this.message = message;
+    }
+
+    public void setUseShadow(boolean useShadow) {
+        this.useShadow = useShadow;
     }
 
     public void setX(int x) {
@@ -137,5 +162,39 @@ public class Message {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    /*
+     * MISC
+     */
+
+    private String parse(String message) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
+        message = message.replaceAll("\\{HEALTH}", MathHelper.floor_double(mc.thePlayer.getHealth()) + "");
+
+        if (mc.theWorld != null) {
+            message = message.replaceAll("\\{WORLDNAME}", mc.theWorld.provider.getInternalNameSuffix());
+            message = message.replaceAll("\\{PLAYERCOUNT}", mc.theWorld.playerEntities.size() + "");
+        }
+
+        if (mc.getRenderViewEntity() != null) {
+            message = message.replaceAll("\\{X}", MathHelper.floor_double(mc.getRenderViewEntity().posX) + "");
+            message = message.replaceAll("\\{Y}", MathHelper.floor_double(mc.getRenderViewEntity().posY) + "");
+            message = message.replaceAll("\\{Z}", MathHelper.floor_double(mc.getRenderViewEntity().posZ) + "");
+        }
+        return message;
+    }
+
+    private String formatName(String name) {
+        char[] charList = name.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        for (char c : charList) {
+            if (Character.isLetterOrDigit(c)) {
+                builder.append(c);
+            }
+        }
+        return builder.toString().trim();
     }
 }

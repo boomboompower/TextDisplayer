@@ -85,4 +85,7 @@ public enum ChatColor {
         return new String(b);
     }
 
+    public static String formatUnformat(char altColorChat, String message) {
+        return stripColor(translateAlternateColorCodes(altColorChat, message));
+    }
 }

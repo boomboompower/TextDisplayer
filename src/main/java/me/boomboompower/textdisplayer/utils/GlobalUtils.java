@@ -32,6 +32,10 @@ public class GlobalUtils {
     }
 
     public static void sendMessage(String message) {
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + ChatColor.translateAlternateColorCodes(message)));
+        sendMessage(message, true);
+    }
+
+    public static void sendMessage(String message, boolean useColor) {
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
     }
 }

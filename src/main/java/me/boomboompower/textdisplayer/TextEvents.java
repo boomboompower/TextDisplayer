@@ -44,7 +44,7 @@ public class TextEvents {
                     // Mehhhhhhhh
                 }
             }
-        } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo) {
+        } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo && mc.thePlayer != null) {
             this.renderDisplay(false);
         }
     }
@@ -71,7 +71,7 @@ public class TextEvents {
                 Gui.drawRect(message.getX(), message.getY(), message.getX() + width, message.getY() + height, -1442840576);
             }
 
-            this.mc.fontRendererObj.drawString(message.getMessage(), message.getX() + 2, message.getY() + 3, Color.WHITE.getRGB(), false);
+            this.mc.fontRendererObj.drawString(message.getMessage(), message.getX() + 2, message.getY() + 3, Color.WHITE.getRGB(), message.useShadow());
         }
     }
 }

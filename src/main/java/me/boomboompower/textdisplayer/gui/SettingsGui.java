@@ -48,8 +48,18 @@ import java.io.IOException;
 
 public class SettingsGui extends GuiScreen {
 
+    private static final String ENABLED = ChatColor.GREEN + "Enabled";
+    private static final String DISABLED = ChatColor.RED + "Disabled";
+
     private GuiTextField text;
+
+    private GuiButton add;
+    private GuiButton clear;
+
     private String input = "";
+    private String lastClickedName = "";
+
+    private boolean useShadow = false;
 
     private int lastMouseX = 0;
     private int lastMouseY = 0;
@@ -66,10 +76,12 @@ public class SettingsGui extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
 
-        text = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 75, this.height / 2 - 27, 150, 20);
+        text = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 75, this.height - 25, 150, 20);
 
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, this.height / 2 + 2, 200, 20, "Add"));
-        this.buttonList.add(new GuiButton(2, this.width / 2 - 100, this.height / 2 + 26, 200, 20, "Clear"));
+        this.buttonList.add(this.add = new GuiButton(1, 20, this.height - 25, 50, 20, "Add"));
+        this.buttonList.add(this.clear = new GuiButton(2, 75, this.height - 25, 50, 20, "Clear"));
+
+        this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
 
         text.setText(input);
         text.setMaxStringLength(100);
@@ -80,6 +92,9 @@ public class SettingsGui extends GuiScreen {
         drawDefaultBackground();
 
         drawTitle("TextDisplayer v" + TextDisplayer.VERSION);
+
+        add.enabled = ChatColor.formatUnformat('&', this.text.getText()).length() > 0;
+        clear.enabled = TextDisplayer.loader.getMessages().size() > 0;
 
         text.drawTextBox();
         super.drawScreen(x, y, ticks);
@@ -105,6 +120,11 @@ public class SettingsGui extends GuiScreen {
 
         if (button == 0) {
             for (Message m : TextDisplayer.loader.getMessages()) {
+                if (this.lastClickedName.equals(m.getName())) {
+                    m.remove();
+                    mc.displayGuiScreen(null);
+                    return;
+                }
                 int startX = m.getX();
                 int startY = m.getY();
                 int endX = startX + mc.fontRendererObj.getStringWidth(m.getMessage()) + 4;
@@ -113,6 +133,7 @@ public class SettingsGui extends GuiScreen {
                     m.dragging = true;
                     this.lastMouseX = mouseX;
                     this.lastMouseY = mouseY;
+                    this.lastClickedName = m.getName();
                 }
             }
         }
@@ -133,6 +154,7 @@ public class SettingsGui extends GuiScreen {
                 m.setY(m.getY() + mouseY - this.lastMouseY);
                 this.lastMouseX = mouseX;
                 this.lastMouseY = mouseY;
+                lastClickedName = "";
             }
         }
     }
@@ -147,8 +169,9 @@ public class SettingsGui extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 1:
-                if (!text.getText().isEmpty()) {
-                    TextDisplayer.loader.create(text.getText().substring(0, 2), text.getText());
+                String message = ChatColor.formatUnformat('&', this.text.getText());
+                if (!message.isEmpty()) {
+                    TextDisplayer.loader.create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), this.useShadow);
                 } else {
                     sendChatMessage("No text provided!");
                 }
@@ -163,6 +186,9 @@ public class SettingsGui extends GuiScreen {
                 sendChatMessage(failed ? ChatColor.RED + "Failed to clear messages!" : ChatColor.GREEN + "Succesfully removed all messages!");
                 mc.displayGuiScreen(null);
                 break;
+            case 3:
+                this.useShadow = !this.useShadow;
+                button.displayString = "Shadow: " + (this.useShadow ? ENABLED : DISABLED);
         }
     }
 
@@ -193,7 +219,7 @@ public class SettingsGui extends GuiScreen {
     }
 
     private void drawTitle(String text) {
-        drawCenteredString(mc.fontRendererObj, text, this.width / 2, this.height / 2 - 80, Color.WHITE.getRGB());
-        drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, this.height / 2 - 70, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, text, this.width / 2, 15, Color.WHITE.getRGB());
+        drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, 25, Color.WHITE.getRGB());
     }
 }
