@@ -128,6 +128,10 @@ public class Message {
         return ChatColor.translateAlternateColorCodes(parse(this.message));
     }
 
+    public String getRawMessage() {
+        return this.message;
+    }
+
     public boolean useShadow() {
         return this.useShadow;
     }
@@ -174,8 +178,10 @@ public class Message {
         message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
         message = message.replaceAll("\\{HEALTH}", MathHelper.floor_double(mc.thePlayer.getHealth()) + "");
 
+        message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
+        message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
+
         if (mc.theWorld != null) {
-            message = message.replaceAll("\\{WORLDNAME}", mc.theWorld.provider.getInternalNameSuffix());
             message = message.replaceAll("\\{PLAYERCOUNT}", mc.theWorld.playerEntities.size() + "");
         }
 

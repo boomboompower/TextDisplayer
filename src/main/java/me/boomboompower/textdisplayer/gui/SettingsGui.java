@@ -121,8 +121,7 @@ public class SettingsGui extends GuiScreen {
         if (button == 0) {
             for (Message m : TextDisplayer.loader.getMessages()) {
                 if (this.lastClickedName.equals(m.getName())) {
-                    m.remove();
-                    mc.displayGuiScreen(null);
+                    new TextSettingsGui(m).display();
                     return;
                 }
                 int startX = m.getX();
