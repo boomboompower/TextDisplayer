@@ -113,14 +113,14 @@ public class Message {
         }
 
         GlobalUtils.sendMessage(failed ?
-                String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + this.name + ChatColor.RED) :
-                String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + this.name + ChatColor.GREEN), false
+                String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.RED) :
+                String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.GREEN), false
         );
 
         if (failed) {
             GlobalUtils.DevUtils.err("Could not delete \"%s\"!", formatName(this.name));
         } else {
-            GlobalUtils.DevUtils.log("Deleted \"%s\"!", this.name);
+            GlobalUtils.DevUtils.log("Deleted \"%s\"!", formatName(this.name));
         }
     }
 
