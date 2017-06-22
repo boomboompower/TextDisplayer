@@ -193,8 +193,8 @@ public class Message {
 
         if (mc.thePlayer != null) {
             message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getHeldItem() == null ? "Air" : I18n.format(mc.thePlayer.getHeldItem().getUnlocalizedName())));
-            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getMaxDamage() - mc.thePlayer.getHeldItem().getItemDamage())));
-            message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getMaxDamage())));
+            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(GlobalUtils.getDura())));
+            message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(GlobalUtils.getMaxDura())));
         }
 
         if (mc.theWorld != null) {

@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 
 public class GlobalUtils {
 
+    private static final Minecraft mc = Minecraft.getMinecraft();
+
     private static final String PREFIX = EnumChatFormatting.GOLD + "TextDisplayer" + EnumChatFormatting.AQUA + " > " + EnumChatFormatting.GRAY;
 
     public static boolean containsIgnoreCase(String message, String contains) {
@@ -36,7 +38,15 @@ public class GlobalUtils {
     }
 
     public static void sendMessage(String message, boolean useColor) {
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
+        mc.thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
+    }
+
+    public static int getDura() {
+        return (mc.thePlayer.getHeldItem().getMaxDamage() - mc.thePlayer.getHeldItem().getItemDamage() >= 0 ? mc.thePlayer.getHeldItem().getMaxDamage() - mc.thePlayer.getHeldItem().getItemDamage() : 0);
+    }
+
+    public static int getMaxDura() {
+        return (mc.thePlayer.getHeldItem().getMaxDamage());
     }
 
     public static class DevUtils {
