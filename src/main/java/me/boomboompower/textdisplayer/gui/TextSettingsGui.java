@@ -68,10 +68,9 @@ public class TextSettingsGui extends GuiScreen {
 
         text = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 75, this.height / 2 - 22, 150, 20);
 
-        this.buttonList.add(this.update = new GuiButton(1, this.width / 2 - 75, this.height / 2 + 2, 150, 20, "Update"));
-        this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 75, this.height / 2 + 26, 150, 20, "Remove"));
-
-        this.buttonList.add(new GuiButton(3, this.width / 2 - 75, this.height / 2 + 50, 150, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
+        this.buttonList.add(this.update = new GuiButton(1, this.width / 2 - 100, this.height / 2 + 8, 200, 20, "Update"));
+        this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 100, this.height / 2 + 32, 200, 20, "Remove"));
+        this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 2 + 56, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
 
         text.setFocused(true);
         text.setCanLoseFocus(false);
@@ -165,6 +164,6 @@ public class TextSettingsGui extends GuiScreen {
 
     private void drawMessage() {
         drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 50, Color.WHITE.getRGB());
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(message.parse(this.text.getText())), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.text.getText())), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
     }
 }

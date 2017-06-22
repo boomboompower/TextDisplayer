@@ -24,8 +24,6 @@ import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.MathHelper;
 
 import org.apache.commons.io.FileUtils;
 
@@ -135,7 +133,7 @@ public class Message {
     }
 
     public String getMessage() {
-        return ChatColor.translateAlternateColorCodes(parse(this.message));
+        return ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.message));
     }
 
     public String getRawMessage() {
@@ -155,7 +153,7 @@ public class Message {
     }
 
     public int getStringWidth() {
-        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(parse(this.message)));
+        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.message)));
     }
 
     /*
@@ -181,36 +179,6 @@ public class Message {
     /*
      * MISC
      */
-
-    public String parse(String message) {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
-        message = message.replaceAll("\\{HEALTH}", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())));
-        message = message.replaceAll("\\{HUNGER}", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()));
-
-        message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
-        message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
-
-        if (mc.thePlayer != null) {
-            message = GlobalUtils.ItemUtils.parse(message);
-        }
-
-        if (mc.theWorld != null) {
-            message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(mc.theWorld.playerEntities.size()));
-        }
-
-        if (mc.getRenderViewEntity() != null) {
-            message = message.replaceAll("\\{X}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posX)));
-            message = message.replaceAll("\\{Y}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posY)));
-            message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
-        }
-
-        for (Placeholder holder : TextDisplayer.loader.placeholders) {
-            message = message.replaceAll("\\{" + holder.getPlaceholder() + "}", holder.getReplacement());
-        }
-        return message;
-    }
 
     public String formatName(String name) {
         char[] charList = name.toCharArray();

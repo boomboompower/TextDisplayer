@@ -18,7 +18,6 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
-
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
@@ -31,11 +30,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
-import java.io.IOException;
 
 //        - 94
 //        - 70
@@ -93,6 +90,7 @@ public class SettingsGui extends GuiScreen {
         drawDefaultBackground();
 
         drawTitle("TextDisplayer v" + TextDisplayer.VERSION);
+        drawSpecials();
 
         add.enabled = ChatColor.formatUnformat('&', this.text.getText()).length() > 0;
         clear.enabled = TextDisplayer.loader.getMessages().size() > 0;
@@ -173,6 +171,7 @@ public class SettingsGui extends GuiScreen {
                 String message = ChatColor.formatUnformat('&', this.text.getText());
                 if (!message.isEmpty()) {
                     TextDisplayer.loader.create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), TextDisplayer.useShadow);
+                    this.text.setText("");
                 } else {
                     sendChatMessage("No text provided!");
                 }
@@ -215,5 +214,12 @@ public class SettingsGui extends GuiScreen {
     private void drawTitle(String text) {
         drawCenteredString(mc.fontRendererObj, text, this.width / 2, 15, Color.WHITE.getRGB());
         drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, 25, Color.WHITE.getRGB());
+    }
+
+    private void drawSpecials() {
+        if (ChatColor.formatUnformat('&', this.text.getText()).length() > 0) {
+            drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height - 50, Color.WHITE.getRGB());
+            drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.text.getText())), this.width / 2, this.height - 40, Color.WHITE.getRGB());
+        }
     }
 }

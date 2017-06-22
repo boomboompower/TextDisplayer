@@ -17,10 +17,14 @@
 
 package me.boomboompower.textdisplayer.utils;
 
+import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.loading.Placeholder;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 
 import java.util.regex.Pattern;
 
@@ -40,6 +44,36 @@ public class GlobalUtils {
 
     public static void sendMessage(String message, boolean useColor) {
         mc.thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
+    }
+
+    public static String parse(String message) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
+        message = message.replaceAll("\\{HEALTH}", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())));
+        message = message.replaceAll("\\{HUNGER}", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()));
+
+        message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
+        message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
+
+        if (mc.thePlayer != null) {
+            message = ItemUtils.parse(message);
+        }
+
+        if (mc.theWorld != null) {
+            message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(mc.theWorld.playerEntities.size()));
+        }
+
+        if (mc.getRenderViewEntity() != null) {
+            message = message.replaceAll("\\{X}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posX)));
+            message = message.replaceAll("\\{Y}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posY)));
+            message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
+        }
+
+        for (Placeholder holder : TextDisplayer.loader.placeholders) {
+            message = message.replaceAll("\\{" + holder.getPlaceholder() + "}", holder.getReplacement());
+        }
+        return message;
     }
 
     public static class DevUtils {
@@ -86,8 +120,17 @@ public class GlobalUtils {
             return stack.getMaxDamage();
         }
 
+        public static int getAmount() {
+            return getAmount(mc.thePlayer.getHeldItem());
+        }
+
+        public static int getAmount(ItemStack stack) {
+            return stack.stackSize;
+        }
+
         public static String parse(String message) {
             message = message.replaceAll("\\{ITEMINHAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(GlobalUtils.ItemUtils.getName())));
+            message = message.replaceAll("\\{ITEMINHAND_AMOUNT}", (mc.thePlayer.getHeldItem() == null ? defaultValue + 1 : String.valueOf(GlobalUtils.ItemUtils.getAmount())));
             message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura())));
             message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura())));
 

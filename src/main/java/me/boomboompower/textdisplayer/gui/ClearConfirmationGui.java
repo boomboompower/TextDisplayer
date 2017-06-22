@@ -18,9 +18,9 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
-import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -75,7 +75,7 @@ public class ClearConfirmationGui extends GuiScreen {
             case 1:
                 clear();
             default:
-                mc.displayGuiScreen(previousScreen);
+                mc.displayGuiScreen(this.previousScreen);
                 break;
         }
     }
