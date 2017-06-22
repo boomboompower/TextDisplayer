@@ -24,6 +24,7 @@ import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.MathHelper;
 
 import org.apache.commons.io.FileUtils;
@@ -191,8 +192,8 @@ public class Message {
         message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
 
         if (mc.thePlayer != null) {
-            message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getHeldItem() == null ? "Air" : mc.thePlayer.getHeldItem().getUnlocalizedName()));
-            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getItemDamage())));
+            message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getHeldItem() == null ? "Air" : I18n.format(mc.thePlayer.getHeldItem().getUnlocalizedName())));
+            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getMaxDamage() - mc.thePlayer.getHeldItem().getItemDamage())));
             message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getMaxDamage())));
         }
 
