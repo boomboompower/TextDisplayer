@@ -26,7 +26,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TextCommand implements ICommand {

@@ -48,6 +48,8 @@ public class TextSettingsGui extends GuiScreen {
     private static final String ENABLED = ChatColor.GREEN + "Enabled";
     private static final String DISABLED = ChatColor.RED + "Disabled";
 
+    private boolean removed;
+
     private GuiTextField text;
 
     private GuiButton update;
@@ -60,6 +62,8 @@ public class TextSettingsGui extends GuiScreen {
     public TextSettingsGui(GuiScreen screen, Message input) {
         this.previous = screen;
         this.message = input;
+
+        this.removed = false;
     }
 
     @Override
@@ -124,6 +128,7 @@ public class TextSettingsGui extends GuiScreen {
                 break;
             case 2:
                 message.remove();
+                this.removed = true;
                 mc.displayGuiScreen(previous);
             case 3:
                 this.message.setUseShadow(!this.message.useShadow());
@@ -134,7 +139,7 @@ public class TextSettingsGui extends GuiScreen {
     @Override
     public void onGuiClosed() {
         Keyboard.enableRepeatEvents(false);
-        message.save();
+        if (!this.removed) message.save();
     }
 
     @Override
