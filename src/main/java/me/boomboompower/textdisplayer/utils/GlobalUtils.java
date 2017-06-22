@@ -129,10 +129,10 @@ public class GlobalUtils {
         }
 
         public static String parse(String message) {
-            message = message.replaceAll("\\{ITEMINHAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(GlobalUtils.ItemUtils.getName())));
-            message = message.replaceAll("\\{ITEMINHAND_AMOUNT}", (mc.thePlayer.getHeldItem() == null ? defaultValue + 1 : String.valueOf(GlobalUtils.ItemUtils.getAmount())));
-            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura())));
-            message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura())));
+            message = message.replaceAll("\\{HAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(GlobalUtils.ItemUtils.getName())));
+            message = message.replaceAll("\\{HAND_AMOUNT}", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(GlobalUtils.ItemUtils.getAmount())));
+            message = message.replaceAll("\\{HAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura())));
+            message = message.replaceAll("\\{HAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura())));
 
             message = message.replaceAll("\\{ARMOR_HEAD_NAME}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(3))));
             message = message.replaceAll("\\{ARMOR_HEAD_DURA}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(3)))));
