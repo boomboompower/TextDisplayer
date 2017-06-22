@@ -60,18 +60,6 @@ processResources {
     }
 }
 
-jar {
-    manifest {
-        def manif = "${projectDir} /META-INF/MANIFEST.MF"
-        if (new File(manif).exists()) {
-            from file(manif)
-        } else {
-            logger.info(project.name + " doesn't have a META-INF/MANIFEST.MF.")
-            manifest.attributes.put("Main-Class", "me.boomboompower.textdisplayer.GG")
-        }
-    }
-}
-
 idea {
     module {
         inheritOutputDirs = true
