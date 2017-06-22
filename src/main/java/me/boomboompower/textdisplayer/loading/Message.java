@@ -191,9 +191,9 @@ public class Message {
         message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
 
         if (mc.thePlayer != null) {
-            message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getItemInUse() == null ? "Air" : mc.thePlayer.getItemInUse().getUnlocalizedName()));
-            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getItemInUse() == null ? "0" : String.valueOf(mc.thePlayer.getItemInUse().getItemDamage())));
-            message = message.replaceAll("\\{ITEMINHAND_MAXDURA}", (mc.thePlayer.getItemInUse() == null ? "0" : String.valueOf(mc.thePlayer.getItemInUse().getMaxDamage())));
+            message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getHeldItem() == null ? "Air" : mc.thePlayer.getHeldItem().getUnlocalizedName()));
+            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getItemDamage())));
+            message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(mc.thePlayer.getHeldItem().getMaxDamage())));
         }
 
         if (mc.theWorld != null) {
