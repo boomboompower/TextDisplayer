@@ -187,14 +187,13 @@ public class Message {
 
         message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
         message = message.replaceAll("\\{HEALTH}", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())));
+        message = message.replaceAll("\\{HUNGER}", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()));
 
         message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
         message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
 
         if (mc.thePlayer != null) {
-            message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getHeldItem() == null ? "Air" : I18n.format(mc.thePlayer.getHeldItem().getUnlocalizedName())));
-            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(GlobalUtils.getDura())));
-            message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? "0" : String.valueOf(GlobalUtils.getMaxDura())));
+            message = GlobalUtils.ItemUtils.parse(message);
         }
 
         if (mc.theWorld != null) {

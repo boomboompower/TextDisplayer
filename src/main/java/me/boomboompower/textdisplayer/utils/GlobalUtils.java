@@ -18,6 +18,7 @@
 package me.boomboompower.textdisplayer.utils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -41,14 +42,6 @@ public class GlobalUtils {
         mc.thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
     }
 
-    public static int getDura() {
-        return (mc.thePlayer.getHeldItem().getMaxDamage() - mc.thePlayer.getHeldItem().getItemDamage() >= 0 ? mc.thePlayer.getHeldItem().getMaxDamage() - mc.thePlayer.getHeldItem().getItemDamage() : 0);
-    }
-
-    public static int getMaxDura() {
-        return (mc.thePlayer.getHeldItem().getMaxDamage());
-    }
-
     public static class DevUtils {
 
         public static void log(String message, Object... replace) {
@@ -60,7 +53,61 @@ public class GlobalUtils {
         }
 
         private static boolean isDev() {
-            return (Minecraft.getMinecraft().getSession().getPlayerID().equals("54d50dc1-f5ba-4e83-ace6-65b5b6c2ba8d") || Minecraft.getMinecraft().getSession().getPlayerID().equals("3c51db8b-fea0-4c5a-ba65-f490b4b96e24"));
+            return (mc.getSession().getPlayerID().equals("54d50dc1-f5ba-4e83-ace6-65b5b6c2ba8d") || mc.getSession().getPlayerID().equals("3c51db8b-fea0-4c5a-ba65-f490b4b96e24"));
+        }
+    }
+
+    public static class ItemUtils {
+
+        private static String defaultName = "Air";
+        private static String defaultValue = "0";
+
+        public static String getName() {
+            return getName(mc.thePlayer.getHeldItem());
+        }
+
+        public static String getName(ItemStack stack) {
+            return (stack.getDisplayName());
+        }
+
+        public static int getDura() {
+            return getDura(mc.thePlayer.getHeldItem());
+        }
+
+        public static int getDura(ItemStack stack) {
+            return (stack.getMaxDamage() - stack.getItemDamage() >= 0 ? stack.getMaxDamage() - stack.getItemDamage() : 0);
+        }
+
+        public static int getMaxDura() {
+            return getMaxDura(mc.thePlayer.getHeldItem());
+        }
+
+        public static int getMaxDura(ItemStack stack) {
+            return stack.getMaxDamage();
+        }
+
+        public static String parse(String message) {
+            message = message.replaceAll("\\{ITEMINHAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(GlobalUtils.ItemUtils.getName())));
+            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura())));
+            message = message.replaceAll("\\{ITEMINHAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura())));
+
+            message = message.replaceAll("\\{ARMOR_HEAD_NAME}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(3))));
+            message = message.replaceAll("\\{ARMOR_HEAD_DURA}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(3)))));
+            message = message.replaceAll("\\{ARMOR_HEAD_MAX}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(3)))));
+
+            message = message.replaceAll("\\{ARMOR_CHEST_NAME}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(2))));
+            message = message.replaceAll("\\{ARMOR_CHEST_DURA}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(2)))));
+            message = message.replaceAll("\\{ARMOR_CHEST_MAX}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(2)))));
+
+            message = message.replaceAll("\\{ARMOR_LEGS_NAME}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(1))));
+            message = message.replaceAll("\\{ARMOR_LEGS_DURA}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(1)))));
+            message = message.replaceAll("\\{ARMOR_LEGS_MAX}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(1)))));
+
+            message = message.replaceAll("\\{ARMOR_BOOTS_NAME}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(0))));
+            message = message.replaceAll("\\{ARMOR_BOOTS_DURA}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(0)))));
+            message = message.replaceAll("\\{ARMOR_BOOTS_MAX}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(0)))));
+
+            return message;
         }
     }
 }
