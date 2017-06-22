@@ -39,6 +39,8 @@ public class TextDisplayer {
     public static MainLoader loader;
     public static TextEvents events;
 
+    public static boolean useShadow = false;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         loader = new MainLoader();
