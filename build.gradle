@@ -13,9 +13,9 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-version = "2.2.6-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 group = "me.boomboompower.textdisplayer"
-archivesBaseName = "AutoGG"
+archivesBaseName = "TextDisplayer"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
