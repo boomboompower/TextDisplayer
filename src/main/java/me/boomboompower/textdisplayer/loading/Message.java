@@ -208,6 +208,6 @@ public class Message {
                 builder.append(c);
             }
         }
-        return builder.toString().trim().length() > 0 ? builder.toString().trim() : "x" + (new Random().nextInt(19) + 1);
+        return builder.toString().trim().length() > 0 ? builder.toString().trim().length() > 50 ? builder.toString().trim().substring(0, 10) : builder.toString().trim() : "x";
     }
 }
