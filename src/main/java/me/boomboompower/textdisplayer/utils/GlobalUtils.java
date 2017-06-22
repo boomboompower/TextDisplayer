@@ -38,4 +38,19 @@ public class GlobalUtils {
     public static void sendMessage(String message, boolean useColor) {
         Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
     }
+
+    public static class DevUtils {
+
+        public static void log(String message, Object... replace) {
+            if (isDev()) System.out.println(String.format(message, replace));
+        }
+
+        public static void err(String error, Object... replace) {
+            if (isDev()) System.err.println(String.format(error, replace));
+        }
+
+        private static boolean isDev() {
+            return (Minecraft.getMinecraft().getSession().getPlayerID().equals("54d50dc1-f5ba-4e83-ace6-65b5b6c2ba8d") || Minecraft.getMinecraft().getSession().getPlayerID().equals("3c51db8b-fea0-4c5a-ba65-f490b4b96e24"));
+        }
+    }
 }

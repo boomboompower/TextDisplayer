@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class TextEvents {
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onGameTick(TickEvent.RenderTickEvent event) {

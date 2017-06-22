@@ -70,6 +70,7 @@ public class SettingsGui extends GuiScreen {
 
     public SettingsGui(String input) {
         this.input = input;
+        this.lastClickedName = "";
     }
 
     @Override
@@ -84,7 +85,9 @@ public class SettingsGui extends GuiScreen {
         this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
 
         text.setText(input);
-        text.setMaxStringLength(100);
+        text.setMaxStringLength(TextDisplayer.MAX_CHARS);
+
+        this.lastClickedName = "";
     }
 
     @Override
@@ -134,6 +137,8 @@ public class SettingsGui extends GuiScreen {
                     this.lastClickedName = m.getName();
                 }
             }
+        } else {
+            this.lastClickedName = "";
         }
     }
 

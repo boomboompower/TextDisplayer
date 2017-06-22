@@ -17,6 +17,7 @@
 
 package me.boomboompower.textdisplayer.gui;
 
+import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
@@ -75,14 +76,14 @@ public class TextSettingsGui extends GuiScreen {
         text.setFocused(true);
         text.setCanLoseFocus(false);
         text.setText(message.getRawMessage());
-        text.setMaxStringLength(100);
+        text.setMaxStringLength(TextDisplayer.MAX_CHARS);
     }
 
     @Override
     public void drawScreen(int x, int y, float ticks) {
         drawDefaultBackground();
 
-        drawTitle(String.format("Modifying %s", ChatColor.GOLD + message.getName() + ChatColor.WHITE));
+        drawTitle(String.format("Modifying %s", ChatColor.GOLD + message.formatName(message.getName()) + ChatColor.WHITE));
         drawMessage();
 
         update.enabled = ChatColor.formatUnformat('&', this.text.getText()).length() > 0;
@@ -119,7 +120,7 @@ public class TextSettingsGui extends GuiScreen {
         switch (button.id) {
             case 1:
                 message.setMessage(this.text.getText());
-                sendChatMessage(String.format("Updated %s!", message.getName()));
+                sendChatMessage(String.format("Updated %s!", message.formatName(message.getName())));
                 mc.displayGuiScreen(previous);
                 break;
             case 2:
@@ -163,7 +164,7 @@ public class TextSettingsGui extends GuiScreen {
     }
 
     private void drawMessage() {
-        drawCenteredString(mc.fontRendererObj, "Name: " + message.getName(), this.width / 2, this.height / 2 - 50, Color.WHITE.getRGB());
-        drawCenteredString(mc.fontRendererObj, "Message: " + message.getMessage(), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 50, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(message.parse(this.text.getText())), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
     }
 }

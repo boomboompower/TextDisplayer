@@ -54,15 +54,17 @@ public class MainLoader {
         List options;
 
         for (File file : mainDir.listFiles()) {
-            try {
-                f = new BufferedReader(new FileReader(file));
-                options = f.lines().collect(Collectors.toList());
+            if (file.getName().endsWith("info")) {
+                try {
+                    f = new BufferedReader(new FileReader(file));
+                    options = f.lines().collect(Collectors.toList());
 
-                if (options.size() > 0) {
-                    messages.add(new Message(new JsonParser().parse((String) options.get(0)).getAsJsonObject()));
+                    if (options.size() > 0) {
+                        messages.add(new Message(new JsonParser().parse((String) options.get(0)).getAsJsonObject()));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
         }
     }
@@ -87,8 +89,9 @@ public class MainLoader {
         messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow)));
     }
 
-    private boolean has(String name, String message) {
+    protected boolean has(String name, String message) {
         boolean has = false;
+
         for (Message m : messages) {
             if (!has) {
                 has = m.getName().equalsIgnoreCase(name) && m.getMessage().equalsIgnoreCase(message);
@@ -99,7 +102,7 @@ public class MainLoader {
         return has;
     }
 
-    private JsonObject create(String name, String message, int x, int y, boolean shadow) {
+    protected JsonObject create(String name, String message, int x, int y, boolean shadow) {
         JsonObject o = new JsonObject();
         o.addProperty("name", name);
         o.addProperty("message", message);

@@ -28,6 +28,7 @@ import net.minecraft.util.MathHelper;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.util.Random;
 
 /*
  * Created by boomboompower on 20/06/2017.
@@ -53,7 +54,7 @@ public class Message {
         this.x = object.has("x") ? object.get("x").getAsInt() : 0;
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
 
-        fileLocation = TextDisplayer.loader.getMainDir().getPath() + "\\" + formatName(this.name) + ".info";
+        fileLocation = TextDisplayer.loader.getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
     }
 
     /*
@@ -89,9 +90,9 @@ public class Message {
             bufferedWriter.write(config.toString());
             bufferedWriter.close();
             writer.close();
-            System.out.println(String.format("Saved \"%s\"!", this.name));
+            GlobalUtils.DevUtils.log("Saved \"%s\"!", this.name);
         } catch (Exception ex) {
-            System.out.println("Could not save config!");
+            GlobalUtils.DevUtils.err("Could not save config!");
             ex.printStackTrace();
         }
     }
@@ -109,11 +110,17 @@ public class Message {
         } catch (Exception ex) {
             failed = true;
         }
-        System.out.println(failed ? String.format("Could not delete \"%s\"!", this.name) : String.format("Deleted \"%s\"!", this.name));
+
         GlobalUtils.sendMessage(failed ?
                 String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + this.name + ChatColor.RED) :
                 String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + this.name + ChatColor.GREEN), false
         );
+
+        if (failed) {
+            GlobalUtils.DevUtils.err("Could not delete \"%s\"!", formatName(this.name));
+        } else {
+            GlobalUtils.DevUtils.log("Deleted \"%s\"!", this.name);
+        }
     }
 
     /*
@@ -172,28 +179,28 @@ public class Message {
      * MISC
      */
 
-    private String parse(String message) {
+    public String parse(String message) {
         Minecraft mc = Minecraft.getMinecraft();
 
         message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
-        message = message.replaceAll("\\{HEALTH}", MathHelper.floor_double(mc.thePlayer.getHealth()) + "");
+        message = message.replaceAll("\\{HEALTH}", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())));
 
         message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
         message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
 
         if (mc.theWorld != null) {
-            message = message.replaceAll("\\{PLAYERCOUNT}", mc.theWorld.playerEntities.size() + "");
+            message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(mc.theWorld.playerEntities.size()));
         }
 
         if (mc.getRenderViewEntity() != null) {
-            message = message.replaceAll("\\{X}", MathHelper.floor_double(mc.getRenderViewEntity().posX) + "");
-            message = message.replaceAll("\\{Y}", MathHelper.floor_double(mc.getRenderViewEntity().posY) + "");
-            message = message.replaceAll("\\{Z}", MathHelper.floor_double(mc.getRenderViewEntity().posZ) + "");
+            message = message.replaceAll("\\{X}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posX)));
+            message = message.replaceAll("\\{Y}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posY)));
+            message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
         }
         return message;
     }
 
-    private String formatName(String name) {
+    public String formatName(String name) {
         char[] charList = name.toCharArray();
         StringBuilder builder = new StringBuilder();
         for (char c : charList) {
@@ -201,6 +208,6 @@ public class Message {
                 builder.append(c);
             }
         }
-        return builder.toString().trim();
+        return builder.toString().trim().length() > 0 ? builder.toString().trim() : "x" + (new Random().nextInt(19) + 1);
     }
 }
