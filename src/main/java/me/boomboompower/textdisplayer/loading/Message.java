@@ -25,10 +25,12 @@ import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.MathHelper;
+
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
-import java.util.Random;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 /*
  * Created by boomboompower on 20/06/2017.
@@ -188,6 +190,12 @@ public class Message {
         message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
         message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
 
+        if (mc.thePlayer != null) {
+            message = message.replaceAll("\\{ITEMINHAND_TYPE}", (mc.thePlayer.getItemInUse() == null ? "Air" : mc.thePlayer.getItemInUse().getUnlocalizedName()));
+            message = message.replaceAll("\\{ITEMINHAND_DURA}", (mc.thePlayer.getItemInUse() == null ? "0" : String.valueOf(mc.thePlayer.getItemInUse().getItemDamage())));
+            message = message.replaceAll("\\{ITEMINHAND_MAXDURA}", (mc.thePlayer.getItemInUse() == null ? "0" : String.valueOf(mc.thePlayer.getItemInUse().getMaxDamage())));
+        }
+
         if (mc.theWorld != null) {
             message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(mc.theWorld.playerEntities.size()));
         }
@@ -196,6 +204,10 @@ public class Message {
             message = message.replaceAll("\\{X}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posX)));
             message = message.replaceAll("\\{Y}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posY)));
             message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
+        }
+
+        for (Placeholder holder : TextDisplayer.loader.placeholders) {
+            message = message.replaceAll("\\{" + holder.getPlaceholder() + "}", holder.getReplacement());
         }
         return message;
     }
