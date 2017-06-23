@@ -83,8 +83,8 @@ public class SettingsGui extends GuiScreen {
 
         this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
 
-        text.setText(input);
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
+        text.setText(input);
 
         this.lastClickedName = "";
     }

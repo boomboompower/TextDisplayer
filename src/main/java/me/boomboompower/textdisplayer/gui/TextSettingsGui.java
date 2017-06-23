@@ -78,8 +78,8 @@ public class TextSettingsGui extends GuiScreen {
 
         text.setFocused(true);
         text.setCanLoseFocus(false);
-        text.setText(message.getRawMessage());
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
+        text.setText(message.getRawMessage());
     }
 
     @Override

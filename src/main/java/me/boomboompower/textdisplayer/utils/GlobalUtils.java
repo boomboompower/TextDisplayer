@@ -21,6 +21,7 @@ import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.loading.Placeholder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -46,6 +47,16 @@ public class GlobalUtils {
         mc.thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
     }
 
+    public static int getPlayerCount() {
+        int players = 0;
+        for (EntityPlayer player : mc.theWorld.playerEntities) {
+            if (!player.isInvisibleToPlayer(mc.thePlayer) && !player.isPotionActive(14)) {
+                players += 1;
+            }
+        }
+        return players;
+    }
+
     public static String parse(String message) {
         Minecraft mc = Minecraft.getMinecraft();
 
@@ -61,7 +72,7 @@ public class GlobalUtils {
         }
 
         if (mc.theWorld != null) {
-            message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(mc.theWorld.playerEntities.size()));
+            message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(getPlayerCount()));
         }
 
         if (mc.getRenderViewEntity() != null) {
