@@ -1,7 +1,23 @@
+/*
+ *     Copyright (C) 2017 boomboompower
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package me.boomboompower.textdisplayer.utils;
 
 import java.util.regex.Pattern;
-
 
 public enum ChatColor {
     
@@ -29,7 +45,6 @@ public enum ChatColor {
     RESET('r');
 
     public static final char COLOR_CHAR = '\u00A7';
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
 
     private final char code;
     private final boolean isFormat;
@@ -64,10 +79,9 @@ public enum ChatColor {
 
     public static String stripColor(final String input) {
         if (input == null) {
-            return null;
+            return input;
         }
-
-        return STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+        return Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]").matcher(input).replaceAll("");
     }
 
     public static String translateAlternateColorCodes(String textToTranslate) {
@@ -85,6 +99,9 @@ public enum ChatColor {
         return new String(b);
     }
 
+    /*
+     * Color then strip the message, useful for removing all colors in the message.
+     */
     public static String formatUnformat(char altColorChat, String message) {
         return stripColor(translateAlternateColorCodes(altColorChat, message));
     }

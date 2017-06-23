@@ -1,5 +1,5 @@
 /*
- *     Copyright (C) 2016 boomboompower
+ *     Copyright (C) 2017 boomboompower
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -59,6 +59,8 @@ public class SettingsGui extends GuiScreen {
     private int lastMouseX = 0;
     private int lastMouseY = 0;
 
+    private boolean useShadow;
+
     public SettingsGui() {
         this("");
     }
@@ -66,6 +68,8 @@ public class SettingsGui extends GuiScreen {
     public SettingsGui(String input) {
         this.input = input;
         this.lastClickedName = "";
+
+        this.useShadow = false;
     }
 
     @Override
@@ -77,7 +81,7 @@ public class SettingsGui extends GuiScreen {
         this.buttonList.add(this.add = new GuiButton(1, 20, this.height - 25, 50, 20, "Add"));
         this.buttonList.add(this.clear = new GuiButton(2, 75, this.height - 25, 50, 20, "Clear"));
 
-        this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (TextDisplayer.useShadow ? ENABLED : DISABLED)));
+        this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
 
         text.setText(input);
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
@@ -170,7 +174,7 @@ public class SettingsGui extends GuiScreen {
             case 1:
                 String message = ChatColor.formatUnformat('&', this.text.getText());
                 if (!message.isEmpty()) {
-                    TextDisplayer.loader.create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), TextDisplayer.useShadow);
+                    TextDisplayer.loader.create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), this.useShadow);
                     this.text.setText("");
                 } else {
                     sendChatMessage("No text provided!");
@@ -180,8 +184,7 @@ public class SettingsGui extends GuiScreen {
                 new ClearConfirmationGui(this).display();
                 break;
             case 3:
-                TextDisplayer.useShadow = !TextDisplayer.useShadow;
-                button.displayString = "Shadow: " + (TextDisplayer.useShadow ? ENABLED : DISABLED);
+                button.displayString = "Shadow: " + ((this.useShadow = !this.useShadow) ? ENABLED : DISABLED);
         }
     }
 
