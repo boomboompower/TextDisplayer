@@ -131,7 +131,7 @@ public class SettingsGui extends GuiScreen {
                 int endX = startX + mc.fontRendererObj.getStringWidth(m.getMessage()) + 4;
                 int endY = startY + 14;
                 if(mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY) {
-                    m.dragging = true;
+                    m.setDragging(true);
                     this.lastMouseX = mouseX;
                     this.lastMouseY = mouseY;
                     this.lastClickedName = m.getName();
@@ -145,14 +145,14 @@ public class SettingsGui extends GuiScreen {
     protected void mouseReleased(int mouseX, int mouseY, int action) {
         super.mouseReleased(mouseX, mouseY, action);
         for (Message m : TextDisplayer.loader.getMessages()) {
-            if (m.dragging) m.dragging = false;
+            if (m.isDragging()) m.setDragging(false);
         }
     }
 
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
         super.mouseClickMove(mouseX, mouseY, lastButtonClicked, timeSinceMouseClick);
         for (Message m : TextDisplayer.loader.getMessages()) {
-            if (m.dragging) {
+            if (m.isDragging()) {
                 m.setX(m.getX() + mouseX - this.lastMouseX);
                 m.setY(m.getY() + mouseY - this.lastMouseY);
                 this.lastMouseX = mouseX;

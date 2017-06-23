@@ -42,11 +42,10 @@ public class Message {
     private String message;
 
     private boolean useShadow = false;
+    private boolean isDragging = false;
 
     private int x;
     private int y;
-
-    public boolean dragging = false;
 
     public Message(JsonObject object) {
         this.name = object.has("name") ? object.get("name").getAsString() : "unknown";
@@ -91,9 +90,7 @@ public class Message {
             bufferedWriter.write(config.toString());
             bufferedWriter.close();
             writer.close();
-            GlobalUtils.DevUtils.log("Saved \"%s\"!", this.name);
         } catch (Exception ex) {
-            GlobalUtils.DevUtils.err("Could not save config!");
             ex.printStackTrace();
         }
     }
@@ -116,12 +113,6 @@ public class Message {
                 String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.RED) :
                 String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.GREEN), false
         );
-
-        if (failed) {
-            GlobalUtils.DevUtils.err("Could not delete \"%s\"!", formatName(this.name));
-        } else {
-            GlobalUtils.DevUtils.log("Deleted \"%s\"!", formatName(this.name));
-        }
     }
 
     /*
@@ -142,6 +133,10 @@ public class Message {
 
     public boolean useShadow() {
         return this.useShadow;
+    }
+
+    public boolean isDragging() {
+        return this.isDragging;
     }
 
     public int getX() {
@@ -166,6 +161,10 @@ public class Message {
 
     public void setUseShadow(boolean useShadow) {
         this.useShadow = useShadow;
+    }
+
+    public void setDragging(boolean isDragging) {
+        this.isDragging = isDragging;
     }
 
     public void setX(int x) {
