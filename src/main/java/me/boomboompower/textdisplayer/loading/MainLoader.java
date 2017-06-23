@@ -87,17 +87,17 @@ public class MainLoader {
     }
 
     public void create(String name, String message, boolean useShadow) {
-        if (has(name, message)) return; // Message already made...
+        if (has(name)) return; // Message already made...
 
         messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow)));
     }
 
-    protected boolean has(String name, String message) {
+    protected boolean has(String name) {
         boolean has = false;
 
         for (Message m : messages) {
             if (!has) {
-                has = m.getName().equalsIgnoreCase(name) && m.getMessage().equalsIgnoreCase(message);
+                has = m.getName().equalsIgnoreCase(name);
             } else {
                 break;
             }
