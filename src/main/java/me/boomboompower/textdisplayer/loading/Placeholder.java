@@ -18,6 +18,7 @@
 package me.boomboompower.textdisplayer.loading;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.utils.ChatColor;
 
 /*
  * Created by boomboompower on 22/06/2017.
@@ -28,10 +29,14 @@ public class Placeholder {
     private Object replaceWith;
 
     public Placeholder(String placeholder, Object replaceWith) {
+        if (placeholder == null || ChatColor.formatUnformat('&', placeholder).isEmpty()) {
+            return;
+        }
         this.placeholder = setupMessage(placeholder);
         this.replaceWith = replaceWith;
 
         TextDisplayer.loader.placeholders.add(this);
+        System.out.print(String.format("[%s] Placeholder registered!", this.placeholder));
     }
 
     /*
@@ -61,7 +66,7 @@ public class Placeholder {
     private String setupMessage(String input) {
         StringBuilder builder = new StringBuilder();
         for (char c : input.toCharArray()) {
-            if (Character.isLetter(c)) builder.append(c);
+            if (Character.isLetter(c) || c == '_') builder.append(c);
         }
         return builder.toString().trim().toUpperCase();
     }
