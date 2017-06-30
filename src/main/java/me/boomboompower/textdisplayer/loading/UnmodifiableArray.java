@@ -34,4 +34,8 @@ public class UnmodifiableArray<T> {
     protected ArrayList<T> get() {
         return arrayList;
     }
+
+    public ArrayList<T> get(String access) {
+        return arrayList;
+    }
 }

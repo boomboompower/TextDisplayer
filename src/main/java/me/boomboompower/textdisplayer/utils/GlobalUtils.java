@@ -81,7 +81,7 @@ public class GlobalUtils {
             message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
         }
 
-        for (Placeholder holder : TextDisplayer.loader.placeholders) {
+        for (Placeholder holder : TextDisplayer.loader.placeholders.get(message)) {
             message = message.replaceAll("\\{" + holder.getPlaceholder() + "}", holder.getReplacement());
         }
         return message;
