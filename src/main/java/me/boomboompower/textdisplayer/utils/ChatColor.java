@@ -79,7 +79,7 @@ public enum ChatColor {
 
     public static String stripColor(final String input) {
         if (input == null) {
-            return input;
+            return null;
         }
         return Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]").matcher(input).replaceAll("");
     }

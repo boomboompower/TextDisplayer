@@ -29,12 +29,16 @@ public class Placeholder {
     private Object replaceWith;
 
     public Placeholder(String placeholder, Object replaceWith) {
-        if (placeholder != null && !ChatColor.formatUnformat('&', placeholder).isEmpty() && !setupMessage(placeholder).isEmpty()) {
+        if (placeholder != null && replaceWith != null && !ChatColor.formatUnformat('&', placeholder).isEmpty() && !setupMessage(placeholder).isEmpty()) {
             this.placeholder = setupMessage(placeholder);
             this.replaceWith = replaceWith;
 
-            TextDisplayer.loader.placeholders.add(this);
-            System.out.print(String.format("[%s] Placeholder registered!", this.placeholder));
+            if (!TextDisplayer.loader.placeholders.has(this)) {
+                TextDisplayer.loader.placeholders.put(this);
+                System.out.print(String.format("[%s] Placeholder registered!", this.placeholder));
+            } else {
+                System.out.print(String.format("[%s] Placeholder already exists. Not registered!", this.placeholder));
+            }
         }
     }
 

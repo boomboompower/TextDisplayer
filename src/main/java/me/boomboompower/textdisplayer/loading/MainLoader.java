@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class MainLoader {
 
     /* Allow devs to add their own placeholders.... */
-    public ArrayList<Placeholder> placeholders = new ArrayList<>();
+    public UnmodifiableArray<Placeholder> placeholders = new UnmodifiableArray<>();
 
     private File mainDir;
     private ArrayList<Message> messages = new ArrayList<>();
