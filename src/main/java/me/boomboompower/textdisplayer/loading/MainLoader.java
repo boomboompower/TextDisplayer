@@ -114,4 +114,10 @@ public class MainLoader {
         o.addProperty("y", y);
         return o.getAsJsonObject();
     }
+
+    public void renderAll(boolean drawBox) {
+        for (Message message : messages) {
+            message.render(drawBox);
+        }
+    }
 }

@@ -54,7 +54,7 @@ public class SettingsGui extends GuiScreen {
     private GuiButton clear;
 
     private String input = "";
-    private String lastClickedName = "";
+    private Message lastClicked = null;
 
     private int lastMouseX = 0;
     private int lastMouseY = 0;
@@ -67,9 +67,8 @@ public class SettingsGui extends GuiScreen {
 
     public SettingsGui(String input) {
         this.input = input;
-        this.lastClickedName = "";
-
         this.useShadow = false;
+        this.lastClicked = null;
     }
 
     @Override
@@ -86,7 +85,7 @@ public class SettingsGui extends GuiScreen {
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
         text.setText(input);
 
-        this.lastClickedName = "";
+        this.lastClicked = null;
     }
 
     @Override
@@ -100,7 +99,7 @@ public class SettingsGui extends GuiScreen {
         clear.enabled = TextDisplayer.loader.getMessages().size() > 0;
 
         text.drawTextBox();
-        TextDisplayer.events.renderDisplay(true);
+        TextDisplayer.loader.renderAll(true);
         super.drawScreen(x, y, ticks);
     }
 
@@ -122,7 +121,7 @@ public class SettingsGui extends GuiScreen {
 
         if (button == 0) {
             for (Message m : TextDisplayer.loader.getMessages()) {
-                if (this.lastClickedName.equals(m.getName())) {
+                if (this.lastClicked != null && this.lastClicked.equals(m)) {
                     new TextSettingsGui(this, m).display();
                     return;
                 }
@@ -130,15 +129,15 @@ public class SettingsGui extends GuiScreen {
                 int startY = m.getY();
                 int endX = startX + mc.fontRendererObj.getStringWidth(m.getMessage()) + 4;
                 int endY = startY + 14;
-                if(mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY) {
+                if (mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY) {
                     m.setDragging(true);
                     this.lastMouseX = mouseX;
                     this.lastMouseY = mouseY;
-                    this.lastClickedName = m.getName();
+                    this.lastClicked = m;
                 }
             }
         } else {
-            this.lastClickedName = "";
+            this.lastClicked = null;
         }
     }
 
@@ -157,7 +156,7 @@ public class SettingsGui extends GuiScreen {
                 m.setY(m.getY() + mouseY - this.lastMouseY);
                 this.lastMouseX = mouseX;
                 this.lastMouseY = mouseY;
-                lastClickedName = "";
+                this.lastClicked = null;
             }
         }
     }

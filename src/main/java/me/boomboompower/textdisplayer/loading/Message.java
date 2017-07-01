@@ -25,8 +25,11 @@ import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
 
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import org.apache.commons.io.FileUtils;
 
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -173,6 +176,34 @@ public class Message {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    /*
+     * RENDERING
+     */
+
+    public void render(boolean drawBox) {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        int width = getStringWidth() + 4;
+        int height = 14;
+
+        if (getX() < 0) {
+             setX(0);
+        } else if (getX() > res.getScaledWidth() - width) {
+            setX(res.getScaledWidth() - width);
+        }
+
+        if (getY() < 0) {
+            setY(0);
+        } else if (getY() > res.getScaledHeight() - height) {
+            setY(res.getScaledHeight() - height);
+        }
+
+        if (drawBox) {
+            Gui.drawRect(getX(), getY(), getX() + width, getY() + height, -1442840576);
+        }
+
+        Minecraft.getMinecraft().fontRendererObj.drawString(getMessage(), getX() + 2, getY() + 3, Color.WHITE.getRGB(), useShadow());
     }
 
     /*

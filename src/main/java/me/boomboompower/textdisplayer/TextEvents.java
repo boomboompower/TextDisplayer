@@ -45,33 +45,7 @@ public class TextEvents {
                 }
             }
         } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo && mc.thePlayer != null) {
-            this.renderDisplay(false);
-        }
-    }
-
-    public void renderDisplay(boolean drawBox) {
-        ScaledResolution res = new ScaledResolution(this.mc);
-
-        for (Message message : TextDisplayer.loader.getMessages()) {
-            int width = message.getStringWidth() + 4;
-            int height = 14;
-            if (message.getX() < 0) {
-                message.setX(0);
-            } else if (message.getX() > res.getScaledWidth() - width) {
-                message.setX(res.getScaledWidth() - width);
-            }
-
-            if (message.getY() < 0) {
-                message.setY(0);
-            } else if (message.getY() > res.getScaledHeight() - height) {
-                message.setY(res.getScaledHeight() - height);
-            }
-
-            if (drawBox) {
-                Gui.drawRect(message.getX(), message.getY(), message.getX() + width, message.getY() + height, -1442840576);
-            }
-
-            this.mc.fontRendererObj.drawString(message.getMessage(), message.getX() + 2, message.getY() + 3, Color.WHITE.getRGB(), message.useShadow());
+            TextDisplayer.loader.renderAll(false);
         }
     }
 }

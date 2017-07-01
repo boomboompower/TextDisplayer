@@ -33,7 +33,7 @@ public class GlobalUtils {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
-    private static final String PREFIX = EnumChatFormatting.GOLD + "TextDisplayer" + EnumChatFormatting.AQUA + " > " + EnumChatFormatting.GRAY;
+    public static final String PREFIX = EnumChatFormatting.GOLD + "TextDisplayer" + EnumChatFormatting.AQUA + " > " + EnumChatFormatting.GRAY;
 
     public static boolean containsIgnoreCase(String message, String contains) {
         return Pattern.compile(Pattern.quote(contains), Pattern.CASE_INSENSITIVE).matcher(message).find();
@@ -81,7 +81,7 @@ public class GlobalUtils {
             message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
         }
 
-        for (Placeholder holder : TextDisplayer.loader.placeholders.get(message)) {
+        for (Placeholder holder : TextDisplayer.loader.placeholders.get(PREFIX)) {
             message = message.replaceAll("\\{" + holder.getPlaceholder() + "}", holder.getReplacement());
         }
         return message;

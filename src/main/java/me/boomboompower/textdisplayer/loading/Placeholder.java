@@ -33,11 +33,11 @@ public class Placeholder {
             this.placeholder = setupMessage(placeholder);
             this.replaceWith = replaceWith;
 
-            if (!TextDisplayer.loader.placeholders.has(this)) {
+            if (!TextDisplayer.loader.placeholders.has(this) && !alreadyHasPlaceholder()) {
                 TextDisplayer.loader.placeholders.put(this);
-                System.out.print(String.format("[%s] Placeholder registered!", this.placeholder));
+                System.out.println(String.format("[%s] Placeholder registered!", this.placeholder));
             } else {
-                System.out.print(String.format("[%s] Placeholder already exists. Not registered!", this.placeholder));
+                System.out.println(String.format("[%s] Placeholder already exists. Not registered!", this.placeholder));
             }
         }
     }
@@ -72,5 +72,14 @@ public class Placeholder {
             if (Character.isLetter(c) || c == '_') builder.append(c);
         }
         return builder.toString().trim().toUpperCase();
+    }
+
+    private boolean alreadyHasPlaceholder() {
+        for (Placeholder p : TextDisplayer.loader.placeholders.get()) {
+            if (p.getPlaceholder().equals(getPlaceholder())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

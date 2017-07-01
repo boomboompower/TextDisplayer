@@ -17,6 +17,8 @@
 
 package me.boomboompower.textdisplayer.loading;
 
+import me.boomboompower.textdisplayer.utils.GlobalUtils;
+
 import java.util.ArrayList;
 
 public class UnmodifiableArray<T> {
@@ -36,6 +38,6 @@ public class UnmodifiableArray<T> {
     }
 
     public ArrayList<T> get(String access) {
-        return arrayList;
+        return access.equals(GlobalUtils.PREFIX) ? arrayList : null;
     }
 }
