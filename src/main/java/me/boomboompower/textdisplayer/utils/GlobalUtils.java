@@ -50,7 +50,7 @@ public class GlobalUtils {
     }
 
     public static void log(String message, Object... replacements) {
-        Logger.getLogger("TextDisplayer").log(Level.INFO, String.format(message, replacements));
+        Logger.getLogger("TextDisplayer").log(Level.ALL, String.format(message, replacements));
     }
 
     public static int getPlayerCount() {

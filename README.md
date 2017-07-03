@@ -13,4 +13,8 @@ screen.
 
 ![Cropped image](http://i.imgur.com/zlFYgkG.png)
 
+![Cropped image2](http://i.imgur.com/t0cXff1.png)
+
 ![Full image](http://i.imgur.com/4BTPOp6.png)
+
+![Full image2](http://i.imgur.com/hm18Yc2.png)
