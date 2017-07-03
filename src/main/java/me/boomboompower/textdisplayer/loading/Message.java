@@ -58,6 +58,8 @@ public class Message {
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
 
         fileLocation = TextDisplayer.loader.getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
+
+        GlobalUtils.log("Loaded %s [x=\'%s\', y=\'%s\', shadow=\'%s\']", formatName(this.name).toLowerCase(), this.x, this.y, this.useShadow);
     }
 
     /*
@@ -72,12 +74,10 @@ public class Message {
         if (this.name == null || this.message == null) {
             return;
         }
-
         try {
             if (!TextDisplayer.loader.getMainDir().exists()) {
                 TextDisplayer.loader.getMainDir().mkdirs();
             }
-
             JsonObject config = new JsonObject();
             File configFile = new File(fileLocation);
 

@@ -116,8 +116,11 @@ public class ClearConfirmationGui extends GuiScreen {
         TextDisplayer.loader.getMessages().clear();
         try {
             FileUtils.deleteDirectory(TextDisplayer.loader.getMainDir());
-        } catch (IOException ex) {failed = true;}
+        } catch (IOException ex) {
+            failed = true;
+        }
 
+        GlobalUtils.log(failed ? "Failed to clear all display messages" : "Removed all display messages!");
         sendChatMessage(failed ? ChatColor.RED + "Failed to clear messages!" : ChatColor.GREEN + "Succesfully removed all messages!");
     }
 }

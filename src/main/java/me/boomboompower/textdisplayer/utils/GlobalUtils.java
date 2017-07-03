@@ -27,6 +27,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class GlobalUtils {
@@ -45,6 +47,10 @@ public class GlobalUtils {
 
     public static void sendMessage(String message, boolean useColor) {
         mc.thePlayer.addChatComponentMessage(new ChatComponentText(PREFIX + (useColor ? ChatColor.translateAlternateColorCodes(message) : message)));
+    }
+
+    public static void log(String message, Object... replacements) {
+        Logger.getLogger("TextDisplayer").log(Level.INFO, String.format(message, replacements));
     }
 
     public static int getPlayerCount() {

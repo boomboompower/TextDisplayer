@@ -19,6 +19,7 @@ package me.boomboompower.textdisplayer.loading;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.utils.ChatColor;
+import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 /*
  * Created by boomboompower on 22/06/2017.
@@ -35,9 +36,9 @@ public class Placeholder {
 
             if (!TextDisplayer.loader.placeholders.has(this) && !alreadyHasPlaceholder()) {
                 TextDisplayer.loader.placeholders.put(this);
-                System.out.println(String.format("[%s] Placeholder registered!", this.placeholder));
+                GlobalUtils.log("[%s] Placeholder registered!", this.placeholder);
             } else {
-                System.out.println(String.format("[%s] Placeholder already exists. Not registered!", this.placeholder));
+                GlobalUtils.log("[%s] Placeholder already exists. Not registered!", this.placeholder);
             }
         }
     }
