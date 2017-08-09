@@ -19,6 +19,7 @@ package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.loading.Message;
+import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
@@ -75,6 +76,7 @@ public class TextSettingsGui extends GuiScreen {
         this.buttonList.add(this.update = new GuiButton(1, this.width / 2 - 100, this.height / 2 + 8, 200, 20, "Update"));
         this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 100, this.height / 2 + 32, 200, 20, "Remove"));
         this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 2 + 56, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
+        this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 2 + 80, 200, 20, "Use Chroma: " + (message.isChroma() ? ENABLED : DISABLED)));
 
         text.setFocused(true);
         text.setCanLoseFocus(false);
@@ -130,9 +132,15 @@ public class TextSettingsGui extends GuiScreen {
                 message.remove();
                 this.removed = true;
                 mc.displayGuiScreen(previous);
+                break;
             case 3:
                 this.message.setUseShadow(!this.message.useShadow());
                 button.displayString = "Use Shadow: " + (this.message.useShadow() ? ENABLED : DISABLED);
+                break;
+            case 4:
+                this.message.setUseChroma(!this.message.isChroma());
+                button.displayString = "Use Chroma: " + (this.message.isChroma() ? ENABLED : DISABLED);
+                break;
         }
     }
 
@@ -169,6 +177,6 @@ public class TextSettingsGui extends GuiScreen {
 
     private void drawMessage() {
         drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 50, Color.WHITE.getRGB());
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.text.getText())), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
     }
 }

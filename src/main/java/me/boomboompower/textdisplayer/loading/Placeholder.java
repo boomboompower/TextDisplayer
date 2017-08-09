@@ -17,70 +17,30 @@
 
 package me.boomboompower.textdisplayer.loading;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
-import me.boomboompower.textdisplayer.utils.ChatColor;
-import me.boomboompower.textdisplayer.utils.GlobalUtils;
+import org.apache.logging.log4j.LogManager;
 
-/*
- * Created by boomboompower on 22/06/2017.
- */
+@Deprecated
 public class Placeholder {
 
-    private String placeholder = "";
-    private Object replaceWith;
-
+    @Deprecated
     public Placeholder(String placeholder, Object replaceWith) {
-        if (placeholder != null && replaceWith != null && !ChatColor.formatUnformat('&', placeholder).isEmpty() && !setupMessage(placeholder).isEmpty()) {
-            this.placeholder = setupMessage(placeholder);
-            this.replaceWith = replaceWith;
-
-            if (!TextDisplayer.loader.placeholders.has(this) && !alreadyHasPlaceholder()) {
-                TextDisplayer.loader.placeholders.put(this);
-                GlobalUtils.log("[%s] Placeholder registered!", this.placeholder);
-            } else {
-                GlobalUtils.log("[%s] Placeholder already exists. Not registered!", this.placeholder);
-            }
-        }
+        LogManager.getLogger().warn("Placeholder class is no longer used");
+        LogManager.getLogger().warn("Use MessageParser instead!");
+        throw new IllegalArgumentException();
     }
 
-    /*
-     * GETTERS
-     */
-
+    @Deprecated
     public String getPlaceholder() {
-        return this.placeholder;
+        return "Empty";
     }
 
+    @Deprecated
     public String getReplacement() {
-        return String.valueOf(this.replaceWith);
+        return "Empty";
     }
 
-    /*
-     * SETTERS
-     */
 
+    @Deprecated
     public void setReplacement(Object replacement) {
-        this.replaceWith = replacement;
-    }
-
-    /*
-     * MISC
-     */
-
-    private String setupMessage(String input) {
-        StringBuilder builder = new StringBuilder();
-        for (char c : input.toCharArray()) {
-            if (Character.isLetter(c) || c == '_') builder.append(c);
-        }
-        return builder.toString().trim().toUpperCase();
-    }
-
-    private boolean alreadyHasPlaceholder() {
-        for (Placeholder p : TextDisplayer.loader.placeholders.get()) {
-            if (p.getPlaceholder().equals(getPlaceholder())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

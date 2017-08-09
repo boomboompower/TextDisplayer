@@ -19,6 +19,7 @@ package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.loading.Message;
+import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
@@ -60,6 +61,7 @@ public class SettingsGui extends GuiScreen {
     private int lastMouseY = 0;
 
     private boolean useShadow;
+    private boolean useChroma;
 
     public SettingsGui() {
         this("");
@@ -81,6 +83,7 @@ public class SettingsGui extends GuiScreen {
         this.buttonList.add(this.clear = new GuiButton(2, 75, this.height - 25, 50, 20, "Clear"));
 
         this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
+        this.buttonList.add(new GuiButton(4, this.width - 230, this.height - 25, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
 
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
         text.setText(input);
@@ -96,10 +99,10 @@ public class SettingsGui extends GuiScreen {
         drawSpecials();
 
         add.enabled = ChatColor.formatUnformat('&', this.text.getText()).length() > 0;
-        clear.enabled = TextDisplayer.loader.getMessages().size() > 0;
+        clear.enabled = TextDisplayer.getInstance().getLoader().getMessages().size() > 0;
 
         text.drawTextBox();
-        TextDisplayer.loader.renderAll(true);
+        TextDisplayer.getInstance().getLoader().renderAll(true);
         super.drawScreen(x, y, ticks);
     }
 
@@ -120,7 +123,7 @@ public class SettingsGui extends GuiScreen {
         } catch (Exception ex) {}
 
         if (button == 0) {
-            for (Message m : TextDisplayer.loader.getMessages()) {
+            for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
                 if (this.lastClicked != null && this.lastClicked.equals(m)) {
                     new TextSettingsGui(this, m).display();
                     return;
@@ -143,14 +146,14 @@ public class SettingsGui extends GuiScreen {
 
     protected void mouseReleased(int mouseX, int mouseY, int action) {
         super.mouseReleased(mouseX, mouseY, action);
-        for (Message m : TextDisplayer.loader.getMessages()) {
+        for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
             if (m.isDragging()) m.setDragging(false);
         }
     }
 
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
         super.mouseClickMove(mouseX, mouseY, lastButtonClicked, timeSinceMouseClick);
-        for (Message m : TextDisplayer.loader.getMessages()) {
+        for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
             if (m.isDragging()) {
                 m.setX(m.getX() + mouseX - this.lastMouseX);
                 m.setY(m.getY() + mouseY - this.lastMouseY);
@@ -173,7 +176,7 @@ public class SettingsGui extends GuiScreen {
             case 1:
                 String message = ChatColor.formatUnformat('&', this.text.getText());
                 if (!message.isEmpty()) {
-                    TextDisplayer.loader.create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), this.useShadow);
+                    TextDisplayer.getInstance().getLoader().create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), this.useShadow, this.useChroma);
                     this.text.setText("");
                 } else {
                     sendChatMessage("No text provided!");
@@ -184,13 +187,17 @@ public class SettingsGui extends GuiScreen {
                 break;
             case 3:
                 button.displayString = "Shadow: " + ((this.useShadow = !this.useShadow) ? ENABLED : DISABLED);
+                break;
+            case 4:
+                button.displayString = "Chroma: " + ((this.useChroma = !this.useChroma) ? ENABLED : DISABLED);
+                break;
         }
     }
 
     @Override
     public void onGuiClosed() {
         Keyboard.enableRepeatEvents(false);
-        TextDisplayer.loader.saveAll();
+        TextDisplayer.getInstance().getLoader().saveAll();
     }
 
     @Override
@@ -221,7 +228,7 @@ public class SettingsGui extends GuiScreen {
     private void drawSpecials() {
         if (ChatColor.formatUnformat('&', this.text.getText()).length() > 0) {
             drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height - 50, Color.WHITE.getRGB());
-            drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.text.getText())), this.width / 2, this.height - 40, Color.WHITE.getRGB());
+            drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height - 40, useChroma ? Message.getColor() : Color.WHITE.getRGB());
         }
     }
 }

@@ -17,15 +17,10 @@
 
 package me.boomboompower.textdisplayer.utils;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
-import me.boomboompower.textdisplayer.loading.Placeholder;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,6 +49,7 @@ public class GlobalUtils {
     }
 
     public static int getPlayerCount() {
+        if (mc.theWorld == null) return 0;
         int players = 0;
         for (EntityPlayer player : mc.theWorld.playerEntities) {
             if (!player.isInvisibleToPlayer(mc.thePlayer) && !player.isPotionActive(14)) {
@@ -61,98 +57,5 @@ public class GlobalUtils {
             }
         }
         return players;
-    }
-
-    public static String parse(String message) {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername());
-        message = message.replaceAll("\\{HEALTH}", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())));
-        message = message.replaceAll("\\{HUNGER}", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()));
-
-        message = message.replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName));
-        message = message.replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP));
-
-        if (mc.thePlayer != null) {
-            message = ItemUtils.parse(message);
-        }
-
-        if (mc.theWorld != null) {
-            message = message.replaceAll("\\{PLAYERCOUNT}", String.valueOf(getPlayerCount()));
-        }
-
-        if (mc.getRenderViewEntity() != null) {
-            message = message.replaceAll("\\{X}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posX)));
-            message = message.replaceAll("\\{Y}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posY)));
-            message = message.replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
-        }
-
-        for (Placeholder holder : TextDisplayer.loader.placeholders.get(PREFIX)) {
-            message = message.replaceAll("\\{" + holder.getPlaceholder() + "}", holder.getReplacement());
-        }
-        return message;
-    }
-
-    public static class ItemUtils {
-
-        private static String defaultName = "Air";
-        private static String defaultValue = "0";
-
-        public static String getName() {
-            return getName(mc.thePlayer.getHeldItem());
-        }
-
-        public static String getName(ItemStack stack) {
-            return (stack.getDisplayName());
-        }
-
-        public static int getDura() {
-            return getDura(mc.thePlayer.getHeldItem());
-        }
-
-        public static int getDura(ItemStack stack) {
-            return (stack.getMaxDamage() - stack.getItemDamage() >= 0 ? stack.getMaxDamage() - stack.getItemDamage() : 0);
-        }
-
-        public static int getMaxDura() {
-            return getMaxDura(mc.thePlayer.getHeldItem());
-        }
-
-        public static int getMaxDura(ItemStack stack) {
-            return stack.getMaxDamage();
-        }
-
-        public static int getAmount() {
-            return getAmount(mc.thePlayer.getHeldItem());
-        }
-
-        public static int getAmount(ItemStack stack) {
-            return stack.stackSize;
-        }
-
-        public static String parse(String message) {
-            message = message.replaceAll("\\{HAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(GlobalUtils.ItemUtils.getName())));
-            message = message.replaceAll("\\{HAND_AMOUNT}", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(GlobalUtils.ItemUtils.getAmount())));
-            message = message.replaceAll("\\{HAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura())));
-            message = message.replaceAll("\\{HAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura())));
-
-            message = message.replaceAll("\\{ARMOR_HEAD_NAME}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(3))));
-            message = message.replaceAll("\\{ARMOR_HEAD_DURA}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(3)))));
-            message = message.replaceAll("\\{ARMOR_HEAD_MAX}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(3)))));
-
-            message = message.replaceAll("\\{ARMOR_CHEST_NAME}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(2))));
-            message = message.replaceAll("\\{ARMOR_CHEST_DURA}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(2)))));
-            message = message.replaceAll("\\{ARMOR_CHEST_MAX}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(2)))));
-
-            message = message.replaceAll("\\{ARMOR_LEGS_NAME}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(1))));
-            message = message.replaceAll("\\{ARMOR_LEGS_DURA}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(1)))));
-            message = message.replaceAll("\\{ARMOR_LEGS_MAX}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(1)))));
-
-            message = message.replaceAll("\\{ARMOR_BOOTS_NAME}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultName : GlobalUtils.ItemUtils.getName(mc.thePlayer.inventory.armorItemInSlot(0))));
-            message = message.replaceAll("\\{ARMOR_BOOTS_DURA}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getDura(mc.thePlayer.inventory.armorItemInSlot(0)))));
-            message = message.replaceAll("\\{ARMOR_BOOTS_MAX}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(GlobalUtils.ItemUtils.getMaxDura(mc.thePlayer.inventory.armorItemInSlot(0)))));
-
-            return message;
-        }
     }
 }

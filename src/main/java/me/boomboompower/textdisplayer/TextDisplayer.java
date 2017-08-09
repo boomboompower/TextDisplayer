@@ -35,8 +35,11 @@ public class TextDisplayer {
 
     public static final Integer MAX_CHARS = 100;
 
-    public static MainLoader loader;
-    public static TextEvents events;
+    private MainLoader loader;
+    private TextEvents events;
+
+    @Mod.Instance
+    private static TextDisplayer instance;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -49,5 +52,17 @@ public class TextDisplayer {
         MinecraftForge.EVENT_BUS.register(events = new TextEvents());
 
         Minecraft.getMinecraft().addScheduledTask(() -> loader.begin());
+    }
+
+    public MainLoader getLoader() {
+        return this.loader;
+    }
+
+    public TextEvents getEvents() {
+        return this.events;
+    }
+
+    public static TextDisplayer getInstance() {
+        return instance;
     }
 }

@@ -18,16 +18,12 @@
 package me.boomboompower.textdisplayer;
 
 import me.boomboompower.textdisplayer.gui.SettingsGui;
-import me.boomboompower.textdisplayer.loading.Message;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class TextEvents {
@@ -45,7 +41,7 @@ public class TextEvents {
                 }
             }
         } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo && mc.thePlayer != null) {
-            TextDisplayer.loader.renderAll(false);
+            TextDisplayer.getInstance().getLoader().renderAll(false);
         }
     }
 }

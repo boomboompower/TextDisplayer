@@ -27,6 +27,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
@@ -61,8 +62,8 @@ public class ClearConfirmationGui extends GuiScreen {
 
         drawTitle("Message clear confirmation");
 
-        drawCenteredString(mc.fontRendererObj, String.format("Are you sure you wish to clear %s %s from the screen?", ChatColor.GOLD.toString() + TextDisplayer.loader.getMessages().size() + ChatColor.WHITE,
-                TextDisplayer.loader.getMessages().size() == 1 ? "entry" : "entries"),
+        drawCenteredString(mc.fontRendererObj, String.format("Are you sure you wish to clear %s %s from the screen?", ChatColor.GOLD.toString() + TextDisplayer.getInstance().getLoader().getMessages().size() + ChatColor.WHITE,
+                TextDisplayer.getInstance().getLoader().getMessages().size() == 1 ? "entry" : "entries"),
                 this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB()
         );
 
@@ -113,9 +114,9 @@ public class ClearConfirmationGui extends GuiScreen {
     private void clear() {
         boolean failed = false;
 
-        TextDisplayer.loader.getMessages().clear();
+        TextDisplayer.getInstance().getLoader().getMessages().clear();
         try {
-            FileUtils.deleteDirectory(TextDisplayer.loader.getMainDir());
+            FileUtils.deleteDirectory(TextDisplayer.getInstance().getLoader().getMainDir());
         } catch (IOException ex) {
             failed = true;
         }

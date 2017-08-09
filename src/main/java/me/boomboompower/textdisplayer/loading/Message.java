@@ -20,6 +20,7 @@ package me.boomboompower.textdisplayer.loading;
 import com.google.gson.JsonObject;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
@@ -44,6 +45,7 @@ public class Message {
     private String name;
     private String message;
 
+    private boolean isChroma = false;
     private boolean useShadow = false;
     private boolean isDragging = false;
 
@@ -53,13 +55,12 @@ public class Message {
     public Message(JsonObject object) {
         this.name = object.has("name") ? object.get("name").getAsString() : "unknown";
         this.message = object.has("message") ? object.get("message").getAsString() : "unknown";
+        this.isChroma = object.has("usechroma") && object.get("usechroma").getAsBoolean();
         this.useShadow = object.has("useshadow") && object.get("useshadow").getAsBoolean();
         this.x = object.has("x") ? object.get("x").getAsInt() : 0;
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
 
-        fileLocation = TextDisplayer.loader.getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
-
-        GlobalUtils.log("Loaded %s [x=\'%s\', y=\'%s\', shadow=\'%s\']", formatName(this.name).toLowerCase(), this.x, this.y, this.useShadow);
+        fileLocation = TextDisplayer.getInstance().getLoader().getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
     }
 
     /*
@@ -75,8 +76,8 @@ public class Message {
             return;
         }
         try {
-            if (!TextDisplayer.loader.getMainDir().exists()) {
-                TextDisplayer.loader.getMainDir().mkdirs();
+            if (!TextDisplayer.getInstance().getLoader().getMainDir().exists()) {
+                TextDisplayer.getInstance().getLoader().getMainDir().mkdirs();
             }
             JsonObject config = new JsonObject();
             File configFile = new File(fileLocation);
@@ -86,6 +87,7 @@ public class Message {
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             config.addProperty("name", this.name);
             config.addProperty("message", this.message);
+            config.addProperty("usechroma", this.isChroma);
             config.addProperty("useshadow", this.useShadow);
             config.addProperty("x", this.x);
             config.addProperty("y", this.y);
@@ -107,7 +109,7 @@ public class Message {
 
         try {
             FileUtils.forceDelete(new File(fileLocation));
-            TextDisplayer.loader.getMessages().remove(this);
+            TextDisplayer.getInstance().getLoader().getMessages().remove(this);
         } catch (Exception ex) {
             failed = true;
         }
@@ -127,7 +129,7 @@ public class Message {
     }
 
     public String getMessage() {
-        return ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.message));
+        return ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.message));
     }
 
     public String getRawMessage() {
@@ -136,6 +138,10 @@ public class Message {
 
     public boolean useShadow() {
         return this.useShadow;
+    }
+
+    public boolean isChroma() {
+        return this.isChroma;
     }
 
     public boolean isDragging() {
@@ -151,7 +157,11 @@ public class Message {
     }
 
     public int getStringWidth() {
-        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(GlobalUtils.parse(this.message)));
+        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.message)));
+    }
+
+    public static int getColor() {
+        return Color.HSBtoRGB(System.currentTimeMillis() % 1000L / 1000.0f, 0.8f, 0.8f);
     }
 
     /*
@@ -164,6 +174,10 @@ public class Message {
 
     public void setUseShadow(boolean useShadow) {
         this.useShadow = useShadow;
+    }
+
+    public void setUseChroma(boolean useChroma) {
+        this.isChroma = useChroma;
     }
 
     public void setDragging(boolean isDragging) {
@@ -203,7 +217,7 @@ public class Message {
             Gui.drawRect(getX(), getY(), getX() + width, getY() + height, -1442840576);
         }
 
-        Minecraft.getMinecraft().fontRendererObj.drawString(getMessage(), getX() + 2, getY() + 3, Color.WHITE.getRGB(), useShadow());
+        Minecraft.getMinecraft().fontRendererObj.drawString(getMessage(), getX() + 2, getY() + 3, isChroma() ? getColor() : Color.WHITE.getRGB(), useShadow());
     }
 
     /*

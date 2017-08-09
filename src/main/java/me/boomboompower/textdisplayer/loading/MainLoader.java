@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class MainLoader {
 
     /* Allow devs to add their own placeholders.... */
-    public UnmodifiableArray<Placeholder> placeholders = new UnmodifiableArray<>();
+    public UnmodifiableArray<Object> placeholders = new UnmodifiableArray<>();
 
     private File mainDir;
     private ArrayList<Message> messages = new ArrayList<>();
@@ -86,10 +86,10 @@ public class MainLoader {
         }
     }
 
-    public void create(String name, String message, boolean useShadow) {
+    public void create(String name, String message, boolean useShadow, boolean isChroma) {
         if (has(name)) return; // Message already made...
 
-        messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow)));
+        messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow, isChroma)));
     }
 
     protected boolean has(String name) {
@@ -105,10 +105,11 @@ public class MainLoader {
         return has;
     }
 
-    protected JsonObject create(String name, String message, int x, int y, boolean shadow) {
+    protected JsonObject create(String name, String message, int x, int y, boolean shadow, boolean isChroma) {
         JsonObject o = new JsonObject();
         o.addProperty("name", name);
         o.addProperty("message", message);
+        o.addProperty("usechroma", isChroma);
         o.addProperty("useshadow", shadow);
         o.addProperty("x", x);
         o.addProperty("y", y);
