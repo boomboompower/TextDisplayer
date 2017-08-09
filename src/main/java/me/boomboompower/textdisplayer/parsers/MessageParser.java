@@ -35,12 +35,10 @@ public abstract class MessageParser {
     private static final HashMap<String, MessageParser> parsers = new HashMap<>();
 
     /**
-     * Default constructor for
+     * Default constructor for MessageParser
      */
     public MessageParser() {
-        parsers.put("MainParser", new MainParser());
-        parsers.put("ItemParser", new ItemParser());
-        parsers.put("DirectionParser", new DirectionParser());
+
     }
 
     /**
@@ -63,6 +61,13 @@ public abstract class MessageParser {
      */
     public static void addParser(MessageParser parser) {
         if (parser != null && parser.getName() != null) parsers.put(parser.getName(), parser);
+    }
+
+    public static void remake() {
+        parsers.clear();
+        parsers.put("MainParser", new MainParser());
+        parsers.put("ItemParser", new ItemParser());
+        parsers.put("DirectionParser", new DirectionParser());
     }
 
     /**

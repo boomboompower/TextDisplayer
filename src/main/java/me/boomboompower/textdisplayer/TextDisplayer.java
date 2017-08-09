@@ -20,6 +20,7 @@ package me.boomboompower.textdisplayer;
 import me.boomboompower.textdisplayer.commands.TextCommand;
 import me.boomboompower.textdisplayer.loading.MainLoader;
 
+import me.boomboompower.textdisplayer.parsers.MessageParser;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,6 +49,7 @@ public class TextDisplayer {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        MessageParser.remake();
         ClientCommandHandler.instance.registerCommand(new TextCommand());
         MinecraftForge.EVENT_BUS.register(events = new TextEvents());
 
