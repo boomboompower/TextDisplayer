@@ -44,7 +44,7 @@ import java.awt.*;
 //        + 50
 //        + 74
 
-public class SettingsGui extends GuiScreen {
+public class MainGui extends GuiScreen {
 
     private static final String ENABLED = ChatColor.GREEN + "Enabled";
     private static final String DISABLED = ChatColor.RED + "Disabled";
@@ -63,11 +63,11 @@ public class SettingsGui extends GuiScreen {
     private boolean useShadow;
     private boolean useChroma;
 
-    public SettingsGui() {
+    public MainGui() {
         this("");
     }
 
-    public SettingsGui(String input) {
+    public MainGui(String input) {
         this.input = input;
         this.useShadow = false;
         this.lastClicked = null;
@@ -83,7 +83,7 @@ public class SettingsGui extends GuiScreen {
         this.buttonList.add(this.clear = new GuiButton(2, 75, this.height - 25, 50, 20, "Clear"));
 
         this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
-        this.buttonList.add(new GuiButton(4, this.width - 230, this.height - 25, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
+        this.buttonList.add(new GuiButton(4, this.width - 120, this.height - 4, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
 
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
         text.setText(input);

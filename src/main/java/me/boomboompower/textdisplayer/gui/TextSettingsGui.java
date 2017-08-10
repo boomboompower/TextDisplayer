@@ -18,15 +18,18 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.gui.utils.OptionSlider;
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -77,6 +80,7 @@ public class TextSettingsGui extends GuiScreen {
         this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 100, this.height / 2 + 32, 200, 20, "Remove"));
         this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 2 + 56, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
         this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 2 + 80, 200, 20, "Use Chroma: " + (message.isChroma() ? ENABLED : DISABLED)));
+        this.buttonList.add(new OptionSlider(5, this.width / 2 - 100, this.height / 2 + 104, message));
 
         text.setFocused(true);
         text.setCanLoseFocus(false);
@@ -177,6 +181,14 @@ public class TextSettingsGui extends GuiScreen {
 
     private void drawMessage() {
         drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 50, Color.WHITE.getRGB());
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB());
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(message.getScale(), message.getScale(), message.getScale());
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height / 2 - 40, message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
+        GlStateManager.popMatrix();
+    }
+
+    public void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color, boolean shadow) {
+        fontRendererIn.drawString(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color, shadow);
     }
 }

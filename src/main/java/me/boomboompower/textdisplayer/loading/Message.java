@@ -25,9 +25,10 @@ import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
-
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
@@ -49,6 +50,8 @@ public class Message {
     private boolean useShadow = false;
     private boolean isDragging = false;
 
+    private float scale;
+
     private int x;
     private int y;
 
@@ -57,10 +60,11 @@ public class Message {
         this.message = object.has("message") ? object.get("message").getAsString() : "unknown";
         this.isChroma = object.has("usechroma") && object.get("usechroma").getAsBoolean();
         this.useShadow = object.has("useshadow") && object.get("useshadow").getAsBoolean();
+        this.scale = object.has("scale") ? object.get("scale").getAsFloat() : 1;
         this.x = object.has("x") ? object.get("x").getAsInt() : 0;
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
 
-        fileLocation = TextDisplayer.getInstance().getLoader().getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
+        this.fileLocation = TextDisplayer.getInstance().getLoader().getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
     }
 
     /*
@@ -148,6 +152,10 @@ public class Message {
         return this.isDragging;
     }
 
+    public float getScale() {
+        return this.scale;
+    }
+
     public int getX() {
         return this.x;
     }
@@ -158,10 +166,6 @@ public class Message {
 
     public int getStringWidth() {
         return Minecraft.getMinecraft().fontRendererObj.getStringWidth(ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.message)));
-    }
-
-    public static int getColor() {
-        return Color.HSBtoRGB(System.currentTimeMillis() % 1000L / 1000.0f, 0.8f, 0.8f);
     }
 
     /*
@@ -182,6 +186,10 @@ public class Message {
 
     public void setDragging(boolean isDragging) {
         this.isDragging = isDragging;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
     public void setX(int x) {
@@ -213,11 +221,14 @@ public class Message {
             setY(res.getScaledHeight() - height);
         }
 
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(getScale(), getScale(), getScale());
         if (drawBox) {
             Gui.drawRect(getX(), getY(), getX() + width, getY() + height, -1442840576);
         }
 
         Minecraft.getMinecraft().fontRendererObj.drawString(getMessage(), getX() + 2, getY() + 3, isChroma() ? getColor() : Color.WHITE.getRGB(), useShadow());
+        GlStateManager.popMatrix();
     }
 
     /*
@@ -233,5 +244,9 @@ public class Message {
             }
         }
         return builder.toString().trim().length() > 0 ? builder.toString().trim().length() > 50 ? builder.toString().trim().substring(0, 10) : builder.toString().trim() : "x";
+    }
+
+    public static int getColor() {
+        return Color.HSBtoRGB(System.currentTimeMillis() % 1500L / 1500.0f, 0.8f, 0.8f);
     }
 }

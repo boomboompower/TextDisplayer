@@ -17,7 +17,7 @@
 
 package me.boomboompower.textdisplayer.commands;
 
-import me.boomboompower.textdisplayer.gui.SettingsGui;
+import me.boomboompower.textdisplayer.gui.MainGui;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -48,9 +48,9 @@ public class TextCommand implements ICommand {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
-            new SettingsGui().display();
+            new MainGui().display();
         } else {
-            new SettingsGui(get(args)).display();
+            new MainGui(get(args)).display();
         }
     }
 

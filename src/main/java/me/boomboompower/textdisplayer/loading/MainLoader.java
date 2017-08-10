@@ -49,21 +49,21 @@ public class MainLoader {
     }
 
     public void begin() {
-        if (!mainDir.exists()) {
-            mainDir.mkdirs();
+        if (!this.mainDir.exists()) {
+            this.mainDir.mkdirs();
         }
 
         BufferedReader f;
         List options;
 
-        for (File file : mainDir.listFiles()) {
+        for (File file : this.mainDir.listFiles()) {
             if (file.getName().endsWith("info")) {
                 try {
                     f = new BufferedReader(new FileReader(file));
                     options = f.lines().collect(Collectors.toList());
 
                     if (options.size() > 0) {
-                        messages.add(new Message(new JsonParser().parse((String) options.get(0)).getAsJsonObject()));
+                        this.messages.add(new Message(new JsonParser().parse((String) options.get(0)).getAsJsonObject()));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -81,7 +81,7 @@ public class MainLoader {
     }
 
     public void saveAll() {
-        for (Message m : messages) {
+        for (Message m : this.messages) {
             m.save();
         }
     }
@@ -89,13 +89,13 @@ public class MainLoader {
     public void create(String name, String message, boolean useShadow, boolean isChroma) {
         if (has(name)) return; // Message already made...
 
-        messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow, isChroma)));
+        this.messages.add(new Message(create(name, message, Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2 + 20, useShadow, isChroma)));
     }
 
-    protected boolean has(String name) {
+    protected boolean has(final String name) {
         boolean has = false;
 
-        for (Message m : messages) {
+        for (Message m : this.messages) {
             if (!has) {
                 has = m.getName().equalsIgnoreCase(name);
             } else {
@@ -117,7 +117,7 @@ public class MainLoader {
     }
 
     public void renderAll(boolean drawBox) {
-        for (Message message : messages) {
+        for (Message message : this.messages) {
             message.render(drawBox);
         }
     }

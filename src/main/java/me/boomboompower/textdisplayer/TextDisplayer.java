@@ -19,8 +19,8 @@ package me.boomboompower.textdisplayer;
 
 import me.boomboompower.textdisplayer.commands.TextCommand;
 import me.boomboompower.textdisplayer.loading.MainLoader;
-
 import me.boomboompower.textdisplayer.parsers.MessageParser;
+
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;

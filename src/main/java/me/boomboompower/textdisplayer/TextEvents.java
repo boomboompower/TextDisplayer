@@ -17,7 +17,7 @@
 
 package me.boomboompower.textdisplayer;
 
-import me.boomboompower.textdisplayer.gui.SettingsGui;
+import me.boomboompower.textdisplayer.gui.MainGui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -33,7 +33,7 @@ public class TextEvents {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onGameTick(TickEvent.RenderTickEvent event) {
         if (mc.currentScreen != null) {
-            if (this.mc.currentScreen instanceof SettingsGui) {
+            if (this.mc.currentScreen instanceof MainGui) {
                 try {
                     this.mc.currentScreen.handleInput();
                 } catch (IOException ex) {
