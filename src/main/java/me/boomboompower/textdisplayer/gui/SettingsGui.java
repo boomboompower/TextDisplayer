@@ -79,14 +79,9 @@ public class SettingsGui extends GuiScreen {
         this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 100, this.height / 2 + 32, 200, 20, "Remove"));
         this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 2 + 56, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
         this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 2 + 80, 200, 20, "Use Chroma: " + (message.isChroma() ? ENABLED : DISABLED)));
-        this.buttonList.add(new GuiSlider(5, this.width / 2 - 100, this.height / 2 + 104, 200, 20, "Scale: ", "", 50.0D, 200.0D, message.getScale() * 250.0D / 2.0D, false, true, (guiSlider) -> {}) {
-            public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-                super.drawButton(mc, mouseX, mouseY);
-            }
-
+        this.buttonList.add(new GuiSlider(5, this.width / 2 - 100, this.height / 2 + 104, 200, 20, "Scale: ", "", 100.0D, 200.0D, message.getScale() * 100, false, true, (guiSlider) -> {}) {
             public void updateSlider() {
                 super.updateSlider();
-                this.showDecimal = false;
                 message.setScale((float) (getValue() / 100.0D));
             }
         });

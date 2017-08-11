@@ -155,8 +155,8 @@ public class MainGui extends GuiScreen {
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
         for (Message message : TextDisplayer.getInstance().getLoader().getMessages()) {
             if (message.isDragging()) {
-                message.setX(message.getX() + mouseX - this.lastMouseX);
-                message.setY(message.getY() + mouseY - this.lastMouseY);
+                message.setX(message.getX() + (int) ((mouseX - this.lastMouseX) / message.getScale()));
+                message.setY(message.getY() + (int) ((mouseY - this.lastMouseY) / message.getScale()));
                 this.lastMouseX = mouseX;
                 this.lastMouseY = mouseY;
                 this.lastClicked = null;

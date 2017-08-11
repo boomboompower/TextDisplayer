@@ -48,6 +48,7 @@ public class Message {
     private boolean isChroma = false;
     private boolean useShadow = false;
     private boolean isDragging = false;
+    private boolean ignoreBox = false;
 
     private float scale;
 
@@ -59,6 +60,7 @@ public class Message {
         this.message = object.has("message") ? object.get("message").getAsString() : "unknown";
         this.isChroma = object.has("usechroma") && object.get("usechroma").getAsBoolean();
         this.useShadow = object.has("useshadow") && object.get("useshadow").getAsBoolean();
+        this.ignoreBox = object.has("ignorebox") && object.get("ignorebox").getAsBoolean();
         this.scale = object.has("scale") ? object.get("scale").getAsFloat() : 1;
         this.x = object.has("x") ? object.get("x").getAsInt() : 0;
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
@@ -92,6 +94,7 @@ public class Message {
             config.addProperty("message", this.message);
             config.addProperty("usechroma", this.isChroma);
             config.addProperty("useshadow", this.useShadow);
+            config.addProperty("ignorebox", this.ignoreBox);
             config.addProperty("scale", this.scale);
             config.addProperty("x", this.x);
             config.addProperty("y", this.y);
@@ -189,7 +192,9 @@ public class Message {
     }
 
     public void setScale(float scale) {
-        this.scale = scale;
+        if (scale > 0) {
+            this.scale = scale;
+        }
     }
 
     public void setX(int x) {
@@ -223,7 +228,7 @@ public class Message {
 
         GlStateManager.pushMatrix();
         GlStateManager.scale(getScale(), getScale(), getScale());
-        if (drawBox) {
+        if (drawBox && !ignoreBox) {
             Gui.drawRect(getX(), getY(), getX() + width, getY() + height, -1442840576);
         }
 

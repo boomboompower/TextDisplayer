@@ -34,7 +34,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class TextDisplayer {
 
     public static final String MODID = "textdisplayer";
-    public static final String VERSION = "1.1.1";
+    public static final String VERSION = "1.2.0";
     public static final String PREFIX = ChatColor.GOLD + "TextDisplayer" + ChatColor.AQUA + " > " + ChatColor.GRAY;
 
     public static final Integer MAX_CHARS = 100;
