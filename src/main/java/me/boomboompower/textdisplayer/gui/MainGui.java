@@ -21,7 +21,6 @@ import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
-import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -83,7 +82,7 @@ public class MainGui extends GuiScreen {
         this.buttonList.add(this.clear = new GuiButton(2, 75, this.height - 25, 50, 20, "Clear"));
 
         this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
-        this.buttonList.add(new GuiButton(4, this.width - 120, this.height - 4, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
+        this.buttonList.add(new GuiButton(4, this.width - 120, this.height - 49, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
 
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
         text.setText(input);
@@ -123,20 +122,20 @@ public class MainGui extends GuiScreen {
         } catch (Exception ex) {}
 
         if (button == 0) {
-            for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
-                if (this.lastClicked != null && this.lastClicked.equals(m)) {
-                    new TextSettingsGui(this, m).display();
+            for (Message message : TextDisplayer.getInstance().getLoader().getMessages()) {
+                if (this.lastClicked != null && this.lastClicked.equals(message)) {
+                    new SettingsGui(this, message).display();
                     return;
                 }
-                int startX = m.getX();
-                int startY = m.getY();
-                int endX = startX + mc.fontRendererObj.getStringWidth(m.getMessage()) + 4;
-                int endY = startY + 14;
+                int startX = (int) (message.getX() * message.getScale());
+                int startY = (int) (message.getY() * message.getScale());
+                int endX = (int) ((startX + mc.fontRendererObj.getStringWidth(message.getMessage()) + 4) * message.getScale());
+                int endY = (int) ((startY + 14) * message.getScale());
                 if (mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY) {
-                    m.setDragging(true);
+                    message.setDragging(true);
                     this.lastMouseX = mouseX;
                     this.lastMouseY = mouseY;
-                    this.lastClicked = m;
+                    this.lastClicked = message;
                 }
             }
         } else {
@@ -144,6 +143,7 @@ public class MainGui extends GuiScreen {
         }
     }
 
+    @Override
     protected void mouseReleased(int mouseX, int mouseY, int action) {
         super.mouseReleased(mouseX, mouseY, action);
         for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
@@ -151,12 +151,12 @@ public class MainGui extends GuiScreen {
         }
     }
 
+    @Override
     protected void mouseClickMove(int mouseX, int mouseY, int lastButtonClicked, long timeSinceMouseClick) {
-        super.mouseClickMove(mouseX, mouseY, lastButtonClicked, timeSinceMouseClick);
-        for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
-            if (m.isDragging()) {
-                m.setX(m.getX() + mouseX - this.lastMouseX);
-                m.setY(m.getY() + mouseY - this.lastMouseY);
+        for (Message message : TextDisplayer.getInstance().getLoader().getMessages()) {
+            if (message.isDragging()) {
+                message.setX(message.getX() + mouseX - this.lastMouseX);
+                message.setY(message.getY() + mouseY - this.lastMouseY);
                 this.lastMouseX = mouseX;
                 this.lastMouseY = mouseY;
                 this.lastClicked = null;
@@ -183,7 +183,7 @@ public class MainGui extends GuiScreen {
                 }
                 break;
             case 2:
-                new ClearConfirmationGui(this).display();
+                new ClearGui(this).display();
                 break;
             case 3:
                 button.displayString = "Shadow: " + ((this.useShadow = !this.useShadow) ? ENABLED : DISABLED);
@@ -207,7 +207,7 @@ public class MainGui extends GuiScreen {
 
     @Override
     public void sendChatMessage(String message) {
-        GlobalUtils.sendMessage(message);
+        TextDisplayer.getInstance().sendMessage(message);
     }
 
     public void display() {

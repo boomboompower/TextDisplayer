@@ -19,7 +19,6 @@ package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.utils.ChatColor;
-import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -32,6 +31,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //        - 94
 //        - 70
@@ -42,11 +43,11 @@ import java.io.IOException;
 //        + 50
 //        + 74
 
-public class ClearConfirmationGui extends GuiScreen {
+public class ClearGui extends GuiScreen {
 
     private GuiScreen previousScreen;
 
-    public ClearConfirmationGui(GuiScreen previous) {
+    public ClearGui(GuiScreen previous) {
         this.previousScreen = previous;
     }
 
@@ -83,7 +84,7 @@ public class ClearConfirmationGui extends GuiScreen {
 
     @Override
     public void sendChatMessage(String msg) {
-        GlobalUtils.sendMessage(msg);
+        TextDisplayer.getInstance().sendMessage(msg);
     }
 
     @Override
@@ -121,7 +122,11 @@ public class ClearConfirmationGui extends GuiScreen {
             failed = true;
         }
 
-        GlobalUtils.log(failed ? "Failed to clear all display messages" : "Removed all display messages!");
+        log(failed ? "Failed to clear all display messages" : "Removed all display messages!");
         sendChatMessage(failed ? ChatColor.RED + "Failed to clear messages!" : ChatColor.GREEN + "Succesfully removed all messages!");
+    }
+
+    private void log(String message, Object... replacements) {
+        Logger.getLogger("TextDisplayer").log(Level.ALL, String.format(message, replacements));
     }
 }

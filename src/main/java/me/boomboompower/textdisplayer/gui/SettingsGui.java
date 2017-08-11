@@ -18,11 +18,9 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
-import me.boomboompower.textdisplayer.gui.utils.OptionSlider;
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
-import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -31,6 +29,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -47,7 +46,7 @@ import java.awt.*;
 //        + 50
 //        + 74
 
-public class TextSettingsGui extends GuiScreen {
+public class SettingsGui extends GuiScreen {
 
     private static final String ENABLED = ChatColor.GREEN + "Enabled";
     private static final String DISABLED = ChatColor.RED + "Disabled";
@@ -63,7 +62,7 @@ public class TextSettingsGui extends GuiScreen {
     
     private Message message;
 
-    public TextSettingsGui(GuiScreen screen, Message input) {
+    public SettingsGui(GuiScreen screen, Message input) {
         this.previous = screen;
         this.message = input;
 
@@ -80,7 +79,17 @@ public class TextSettingsGui extends GuiScreen {
         this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 100, this.height / 2 + 32, 200, 20, "Remove"));
         this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 2 + 56, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
         this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 2 + 80, 200, 20, "Use Chroma: " + (message.isChroma() ? ENABLED : DISABLED)));
-        this.buttonList.add(new OptionSlider(5, this.width / 2 - 100, this.height / 2 + 104, message));
+        this.buttonList.add(new GuiSlider(5, this.width / 2 - 100, this.height / 2 + 104, 200, 20, "Scale: ", "", 50.0D, 200.0D, message.getScale() * 250.0D / 2.0D, false, true, (guiSlider) -> {}) {
+            public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+                super.drawButton(mc, mouseX, mouseY);
+            }
+
+            public void updateSlider() {
+                super.updateSlider();
+                this.showDecimal = false;
+                message.setScale((float) (getValue() / 100.0D));
+            }
+        });
 
         text.setFocused(true);
         text.setCanLoseFocus(false);
@@ -161,7 +170,7 @@ public class TextSettingsGui extends GuiScreen {
 
     @Override
     public void sendChatMessage(String message) {
-        GlobalUtils.sendMessage(message, false);
+        TextDisplayer.getInstance().sendMessage(message);
     }
 
     public void display() {
@@ -184,7 +193,7 @@ public class TextSettingsGui extends GuiScreen {
 
         GlStateManager.pushMatrix();
         GlStateManager.scale(message.getScale(), message.getScale(), message.getScale());
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height / 2 - 40, message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) (this.width / 2 - message.getScale()), (int) (this.height / 2 - 40 - message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
         GlStateManager.popMatrix();
     }
 

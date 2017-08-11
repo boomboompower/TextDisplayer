@@ -24,7 +24,7 @@ import me.boomboompower.textdisplayer.parsers.normal.MainParser;
 import java.util.HashMap;
 
 /**
- * Created to replace the {@link me.boomboompower.textdisplayer.loading.Placeholder} class
+ * Created to replace the old Placeholder class
  *      due to it's inefficiency
  *
  * @author boomboompower

@@ -18,12 +18,12 @@
 package me.boomboompower.textdisplayer.commands;
 
 import me.boomboompower.textdisplayer.gui.MainGui;
+import me.boomboompower.textdisplayer.utils.ChatColor;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,12 +32,12 @@ public class TextCommand implements ICommand {
 
     @Override
     public String getCommandName() {
-        return "textwriter";
+        return "textdisplayer";
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return EnumChatFormatting.RED + "Usage: /textwriter";
+        return ChatColor.RED + "Usage: /" + getCommandName();
     }
 
     @Override

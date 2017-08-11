@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
-import me.boomboompower.textdisplayer.utils.GlobalUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -93,6 +92,7 @@ public class Message {
             config.addProperty("message", this.message);
             config.addProperty("usechroma", this.isChroma);
             config.addProperty("useshadow", this.useShadow);
+            config.addProperty("scale", this.scale);
             config.addProperty("x", this.x);
             config.addProperty("y", this.y);
 
@@ -118,9 +118,9 @@ public class Message {
             failed = true;
         }
 
-        GlobalUtils.sendMessage(failed ?
+        TextDisplayer.getInstance().sendMessage(failed ?
                 String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.RED) :
-                String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.GREEN), false
+                String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.GREEN)
         );
     }
 
@@ -247,6 +247,6 @@ public class Message {
     }
 
     public static int getColor() {
-        return Color.HSBtoRGB(System.currentTimeMillis() % 1500L / 1500.0f, 0.8f, 0.8f);
+        return Color.HSBtoRGB(System.currentTimeMillis() % 2500L / 2500.0f, 0.8f, 0.8f);
     }
 }
