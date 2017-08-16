@@ -53,7 +53,7 @@ import java.awt.*;
 public class SettingsGui extends GuiScreen {
 
     private static final String ENABLED = ChatColor.GREEN + "Enabled";
-    private static final String DISABLED = ChatColor.RED + "Disabled";
+    private static final String DISABLED = ChatColor.GRAY + "Disabled";
 
     private boolean removed;
 
@@ -192,11 +192,11 @@ public class SettingsGui extends GuiScreen {
     }
 
     private void drawMessage() {
-        drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 74, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 78, Color.WHITE.getRGB());
 
         GlStateManager.pushMatrix();
         GL11.glScaled(message.getScale(), message.getScale(), 1.0);
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) ((this.width / 2) / message.getScale()), (int) ((this.height / 2 - 64) / message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) ((this.width / 2) / message.getScale()), (int) ((this.height / 2 - 68) / message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
         GlStateManager.popMatrix();
     }
 

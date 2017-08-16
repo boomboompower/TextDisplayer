@@ -52,7 +52,7 @@ import java.awt.*;
 public class MainGui extends GuiScreen {
 
     private static final String ENABLED = ChatColor.GREEN + "Enabled";
-    private static final String DISABLED = ChatColor.RED + "Disabled";
+    private static final String DISABLED = ChatColor.GRAY + "Disabled";
 
     private ModernTextBox text;
 
@@ -253,6 +253,7 @@ public class MainGui extends GuiScreen {
     private void drawTitle(String text) {
         drawCenteredString(mc.fontRendererObj, text, this.width / 2, 15, Color.WHITE.getRGB());
         drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, 25, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, "Created by boomboompower", this.width / 2, 30, Color.WHITE.getRGB());
     }
 
     private void drawSpecials() {

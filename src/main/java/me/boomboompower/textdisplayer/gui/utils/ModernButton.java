@@ -39,8 +39,7 @@ public class ModernButton extends GuiButton {
     public boolean hovered;
     public String displayString;
 
-    public ModernButton(int buttonId, int x, int y, String buttonText)
-    {
+    public ModernButton(int buttonId, int x, int y, String buttonText) {
         this(buttonId, x, y, 200, 20, buttonText);
     }
 
@@ -48,11 +47,11 @@ public class ModernButton extends GuiButton {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
         this.width = 200;
         this.height = 20;
-        this.enabled = true;
-        this.visible = true;
         this.id = buttonId;
         this.xPosition = x;
         this.yPosition = y;
+        this.enabled = true;
+        this.visible = true;
         this.width = widthIn;
         this.height = heightIn;
         this.displayString = buttonText;
@@ -97,6 +96,7 @@ public class ModernButton extends GuiButton {
             } else if (this.hovered) {
                 j = 16777120;
             }
+
             fontrenderer.drawString(this.displayString, (this.xPosition + this.width / 2 - fontrenderer.getStringWidth(this.displayString) / 2), this.yPosition + (this.height - 8) / 2, j, false);
         }
     }
