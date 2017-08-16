@@ -20,6 +20,7 @@ package me.boomboompower.textdisplayer.parsers.normal;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 public class ItemParser extends MessageParser {
@@ -36,9 +37,12 @@ public class ItemParser extends MessageParser {
 
     public String parse(String message) {
         return message.replaceAll("\\{HAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(getName())))
+                .replaceAll("\\{HAND_TOTALAMOUNT}", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getTotalAmount())))
                 .replaceAll("\\{HAND_AMOUNT}", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getAmount())))
                 .replaceAll("\\{HAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(getDura())))
                 .replaceAll("\\{HAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(getMaxDura())))
+
+                .replaceAll("\\{ARROWCOUNT}", (mc.thePlayer.getInventory() == null ? defaultValue : String.valueOf(getArrowCount())))
 
                 .replaceAll("\\{ARMOR_HEAD_NAME}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(3))))
                 .replaceAll("\\{ARMOR_HEAD_DURA}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(3)))))
@@ -87,5 +91,29 @@ public class ItemParser extends MessageParser {
 
     public int getAmount(ItemStack stack) {
         return stack.stackSize;
+    }
+
+    public int getTotalAmount() {
+        int amount = 0;
+        for (int slot = 0; slot < mc.thePlayer.inventory.getSizeInventory(); slot++) {
+            ItemStack stack = mc.thePlayer.inventory.getStackInSlot(slot);
+
+            if (stack != null && stack.getItem().equals(mc.thePlayer.getHeldItem().getItem())) {
+                amount += stack.stackSize;
+            }
+        }
+        return amount;
+    }
+
+    public int getArrowCount() {
+        int amount = 0;
+        for (int slot = 0; slot < mc.thePlayer.inventory.getSizeInventory(); slot++) {
+            ItemStack stack = mc.thePlayer.inventory.getStackInSlot(slot);
+
+            if (stack != null && stack.getItem().equals(Items.arrow)) {
+                amount += stack.stackSize;
+            }
+        }
+        return amount;
     }
 }

@@ -19,6 +19,9 @@ package me.boomboompower.textdisplayer;
 
 import me.boomboompower.textdisplayer.gui.MainGui;
 
+import me.boomboompower.textdisplayer.parsers.MessageParser;
+import me.boomboompower.textdisplayer.parsers.normal.CPSParser;
+
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -42,6 +45,14 @@ public class TextEvents {
             }
         } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo && mc.thePlayer != null) {
             TextDisplayer.getInstance().getLoader().renderAll(false);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onTick(TickEvent.RenderTickEvent event) {
+        MessageParser parser = MessageParser.getParser("CPSParser");
+        if (parser != null) {
+            ((CPSParser) parser).incrementCPS();
         }
     }
 }

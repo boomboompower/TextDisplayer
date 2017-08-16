@@ -18,17 +18,23 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.gui.utils.ModernButton;
+import me.boomboompower.textdisplayer.gui.utils.ModernTextBox;
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.Timer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import org.lwjgl.input.Keyboard;
 
@@ -48,12 +54,13 @@ public class MainGui extends GuiScreen {
     private static final String ENABLED = ChatColor.GREEN + "Enabled";
     private static final String DISABLED = ChatColor.RED + "Disabled";
 
-    private GuiTextField text;
+    private ModernTextBox text;
 
     private GuiButton add;
     private GuiButton clear;
 
     private String input = "";
+
     private Message lastClicked = null;
 
     private int lastMouseX = 0;
@@ -62,13 +69,31 @@ public class MainGui extends GuiScreen {
     private boolean useShadow;
     private boolean useChroma;
 
+    // Displaying message on screen
+    private Timer timer;
+    private String message = "";
+    private int messageTimer;
+
     public MainGui() {
-        this("");
+        this(true, "");
     }
 
-    public MainGui(String input) {
+    public MainGui(boolean command, String input) {
         this.input = input;
+        initalize();
+    }
+
+    public MainGui(String message) {
+        initalize();
+
+        displayMessage(message);
+    }
+
+    private void initalize() {
+        this.message = "";
+        this.messageTimer = 0;
         this.useShadow = false;
+        this.useChroma = false;
         this.lastClicked = null;
     }
 
@@ -76,13 +101,13 @@ public class MainGui extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
 
-        text = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 75, this.height - 25, 150, 20);
+        text = new ModernTextBox(0, this.width / 2 - 75, this.height - 25, 150, 20);
 
-        this.buttonList.add(this.add = new GuiButton(1, 20, this.height - 25, 50, 20, "Add"));
-        this.buttonList.add(this.clear = new GuiButton(2, 75, this.height - 25, 50, 20, "Clear"));
+        this.buttonList.add(this.add = new ModernButton(1, 20, this.height - 25, 50, 20, "Add"));
+        this.buttonList.add(this.clear = new ModernButton(2, 75, this.height - 25, 50, 20, "Clear"));
 
-        this.buttonList.add(new GuiButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
-        this.buttonList.add(new GuiButton(4, this.width - 120, this.height - 49, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
+        this.buttonList.add(new ModernButton(3, this.width - 120, this.height - 25, 100, 20, "Shadow: " + (this.useShadow ? ENABLED : DISABLED)));
+        this.buttonList.add(new ModernButton(4, this.width - 120, this.height - 49, 100, 20, "Chroma: " + (this.useChroma ? ENABLED : DISABLED)));
 
         text.setMaxStringLength(TextDisplayer.MAX_CHARS);
         text.setText(input);
@@ -103,6 +128,8 @@ public class MainGui extends GuiScreen {
         text.drawTextBox();
         TextDisplayer.getInstance().getLoader().renderAll(true);
         super.drawScreen(x, y, ticks);
+
+        runMessage();
     }
 
     @Override
@@ -123,18 +150,21 @@ public class MainGui extends GuiScreen {
 
         if (button == 0) {
             for (Message message : TextDisplayer.getInstance().getLoader().getMessages()) {
-                if (this.lastClicked != null && this.lastClicked.equals(message)) {
+                if (this.lastClicked != null && this.lastClicked.equals(message) && message.b()) {
                     new SettingsGui(this, message).display();
+                    this.lastClicked = null;
                     return;
                 }
                 int startX = (int) (message.getX() * message.getScale());
                 int startY = (int) (message.getY() * message.getScale());
-                int endX = (int) ((startX + mc.fontRendererObj.getStringWidth(message.getMessage()) + 4) * message.getScale());
-                int endY = (int) ((startY + 14) * message.getScale());
+                int endX = (int) ((startX + ((mc.fontRendererObj.getStringWidth(message.getMessage()) + 4) * message.getScale())));
+                int endY = (int) ((startY + (14 * message.getScale())));
                 if (mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY) {
-                    message.setDragging(true);
-                    this.lastMouseX = mouseX;
-                    this.lastMouseY = mouseY;
+                    if (message.c()) {
+                        message.setDragging(true);
+                        this.lastMouseX = mouseX;
+                        this.lastMouseY = mouseY;
+                    }
                     this.lastClicked = message;
                 }
             }
@@ -146,8 +176,8 @@ public class MainGui extends GuiScreen {
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int action) {
         super.mouseReleased(mouseX, mouseY, action);
-        for (Message m : TextDisplayer.getInstance().getLoader().getMessages()) {
-            if (m.isDragging()) m.setDragging(false);
+        for (Message message : TextDisplayer.getInstance().getLoader().getMessages()) {
+            if (message.isDragging()) message.setDragging(false);
         }
     }
 
@@ -186,10 +216,10 @@ public class MainGui extends GuiScreen {
                 new ClearGui(this).display();
                 break;
             case 3:
-                button.displayString = "Shadow: " + ((this.useShadow = !this.useShadow) ? ENABLED : DISABLED);
+                ((ModernButton) button).displayString = "Shadow: " + ((this.useShadow = !this.useShadow) ? ENABLED : DISABLED);
                 break;
             case 4:
-                button.displayString = "Chroma: " + ((this.useChroma = !this.useChroma) ? ENABLED : DISABLED);
+                ((ModernButton) button).displayString = "Chroma: " + ((this.useChroma = !this.useChroma) ? ENABLED : DISABLED);
                 break;
         }
     }
@@ -228,7 +258,57 @@ public class MainGui extends GuiScreen {
     private void drawSpecials() {
         if (ChatColor.formatUnformat('&', this.text.getText()).length() > 0) {
             drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height - 50, Color.WHITE.getRGB());
-            drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height - 40, useChroma ? Message.getColor() : Color.WHITE.getRGB());
+            drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), this.width / 2, this.height - 40, useChroma ? Message.getColor() : Color.WHITE.getRGB(), useShadow);
         }
+    }
+
+    private void displayMessage(String message, Object... replacements) {
+        try {
+            message = String.format(message, replacements);
+        } catch (Exception ex) {
+        }
+
+        this.message = ChatColor.translateAlternateColorCodes('&', message);
+        this.messageTimer = 80;
+    }
+
+    private void runMessage() {
+        if (messageTimer > 0) {
+            --messageTimer;
+            ScaledResolution resolution = new ScaledResolution(mc);
+            int scaledWidth = resolution.getScaledWidth();
+            int scaledHight = resolution.getScaledHeight();
+            float time = (float) this.messageTimer - getTimer().renderPartialTicks;
+            int opacity = (int) (time * 255.0F / 20.0F);
+
+            if (opacity > 255) {
+                opacity = 255;
+            }
+
+            if (opacity > 8) {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((float)(scaledWidth / 2), (float) (scaledHight - 80), 0.0F);
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+                int color = Color.WHITE.getRGB();
+
+                fontRendererObj.drawString(ChatColor.RED + message, -fontRendererObj.getStringWidth(message) / 2, -4, color + (opacity << 24 & -16777216));
+                GlStateManager.disableBlend();
+                GlStateManager.popMatrix();
+            }
+        }
+    }
+
+    private Timer getTimer() {
+        return timer == null ? timer = ReflectionHelper.getPrivateValue(Minecraft.class, mc, "timer", "field_71428_T") : timer;
+    }
+
+    @Override
+    public void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+        drawCenteredString(fontRendererIn, text, x, y, color, true);
+    }
+
+    public void drawCenteredString(FontRenderer fontRenderer, String text, int x, int y, int color, boolean shadow) {
+        fontRenderer.drawString(text, (float)(x - fontRenderer.getStringWidth(text) / 2), (float)y, color, shadow);
     }
 }

@@ -22,12 +22,12 @@ import com.google.gson.JsonObject;
 import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
+import me.boomboompower.textdisplayer.utils.MessageHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
@@ -48,7 +48,12 @@ public class Message {
     private boolean isChroma = false;
     private boolean useShadow = false;
     private boolean isDragging = false;
-    private boolean ignoreBox = false;
+
+    // Special options - START
+    private boolean a = false;
+    private boolean b = true;
+    private boolean c = true;
+    // Special options - END
 
     private float scale;
 
@@ -56,11 +61,13 @@ public class Message {
     private int y;
 
     public Message(JsonObject object) {
-        this.name = object.has("name") ? object.get("name").getAsString() : "unknown";
+        this.name = object.has("name") ? object.get("name").getAsString() : MessageHelper.getRandomString(20);
         this.message = object.has("message") ? object.get("message").getAsString() : "unknown";
         this.isChroma = object.has("usechroma") && object.get("usechroma").getAsBoolean();
         this.useShadow = object.has("useshadow") && object.get("useshadow").getAsBoolean();
-        this.ignoreBox = object.has("ignorebox") && object.get("ignorebox").getAsBoolean();
+        this.a = object.has("a") && object.get("a").getAsBoolean();
+        this.b = !object.has("b") || object.get("b").getAsBoolean();
+        this.c = !object.has("c") || object.get("c").getAsBoolean();
         this.scale = object.has("scale") ? object.get("scale").getAsFloat() : 1;
         this.x = object.has("x") ? object.get("x").getAsInt() : 0;
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
@@ -94,7 +101,9 @@ public class Message {
             config.addProperty("message", this.message);
             config.addProperty("usechroma", this.isChroma);
             config.addProperty("useshadow", this.useShadow);
-            config.addProperty("ignorebox", this.ignoreBox);
+            config.addProperty("a", this.a);
+            config.addProperty("b", this.b);
+            config.addProperty("c", this.c);
             config.addProperty("scale", this.scale);
             config.addProperty("x", this.x);
             config.addProperty("y", this.y);
@@ -107,9 +116,9 @@ public class Message {
         }
     }
 
-    public void remove() {
+    public boolean remove() {
         if (this.name == null || this.message == null) {
-            return;
+            return false;
         }
 
         boolean failed = false;
@@ -120,11 +129,7 @@ public class Message {
         } catch (Exception ex) {
             failed = true;
         }
-
-        TextDisplayer.getInstance().sendMessage(failed ?
-                String.format(ChatColor.RED + "Could not delete %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.RED) :
-                String.format(ChatColor.GREEN + "Successfully deleted %s!", ChatColor.GOLD + formatName(this.name) + ChatColor.GREEN)
-        );
+        return !failed;
     }
 
     /*
@@ -216,19 +221,19 @@ public class Message {
 
         if (getX() < 0) {
              setX(0);
-        } else if (getX() > res.getScaledWidth() - width) {
-            setX(res.getScaledWidth() - width);
+        } else if (getX() * getScale() > res.getScaledWidth() - width) {
+            setX((int) ((res.getScaledWidth() - (width * getScale())) / getScale()));
         }
 
         if (getY() < 0) {
             setY(0);
-        } else if (getY() > res.getScaledHeight() - height) {
-            setY(res.getScaledHeight() - height);
+        } else if (getY() * getScale() > res.getScaledHeight() - height) {
+            setY((int) ((res.getScaledHeight() - (height * getScale())) / getScale()));
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.scale(getScale(), getScale(), getScale());
-        if (drawBox && !ignoreBox) {
+        GlStateManager.scale(getScale(), getScale(), 1.0);
+        if (drawBox && !a) {
             Gui.drawRect(getX(), getY(), getX() + width, getY() + height, -1442840576);
         }
 
@@ -248,10 +253,26 @@ public class Message {
                 builder.append(c);
             }
         }
-        return builder.toString().trim().length() > 0 ? builder.toString().trim().length() > 50 ? builder.toString().trim().substring(0, 10) : builder.toString().trim() : "x";
+        return builder.toString().trim().length() > 0 ? builder.toString().trim().length() > 50 ? builder.toString().trim().substring(0, 10) : builder.toString().trim() : MessageHelper.getRandomString(10);
     }
 
     public static int getColor() {
         return Color.HSBtoRGB(System.currentTimeMillis() % 2500L / 2500.0f, 0.8f, 0.8f);
+    }
+
+    /*
+     * UNKNOWN ;)
+     */
+
+    public boolean a() {
+        return this.a;
+    }
+
+    public boolean b() {
+        return this.b;
+    }
+
+    public boolean c() {
+        return this.c;
     }
 }

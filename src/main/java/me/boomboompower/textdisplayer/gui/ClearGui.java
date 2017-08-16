@@ -18,6 +18,7 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.gui.utils.ModernButton;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 
 import net.minecraft.client.Minecraft;
@@ -53,8 +54,8 @@ public class ClearGui extends GuiScreen {
 
     @Override
     public void initGui() {
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 160, this.height / 2 + 2, 150, 20, "Cancel"));
-        this.buttonList.add(new GuiButton(1, this.width / 2 + 13, this.height / 2 + 2, 150, 20, "Confirm"));
+        this.buttonList.add(new ModernButton(0, this.width / 2 - 160, this.height / 2 + 2, 150, 20, "Cancel"));
+        this.buttonList.add(new ModernButton(1, this.width / 2 + 13, this.height / 2 + 2, 150, 20, "Confirm"));
     }
 
     @Override
@@ -76,8 +77,9 @@ public class ClearGui extends GuiScreen {
         switch (button.id) {
             case 1:
                 clear();
+                break;
             default:
-                mc.displayGuiScreen(this.previousScreen);
+                displayPrevious("Cancelled clearing operation");
                 break;
         }
     }
@@ -123,10 +125,18 @@ public class ClearGui extends GuiScreen {
         }
 
         log(failed ? "Failed to clear all display messages" : "Removed all display messages!");
-        sendChatMessage(failed ? ChatColor.RED + "Failed to clear messages!" : ChatColor.GREEN + "Succesfully removed all messages!");
+        displayPrevious(failed ? "Failed to clear messages!" : "&aSuccesfully removed all messages!");
     }
 
     private void log(String message, Object... replacements) {
         Logger.getLogger("TextDisplayer").log(Level.ALL, String.format(message, replacements));
+    }
+
+    private void displayPrevious(String message) {
+        if (previousScreen instanceof MainGui) {
+            mc.displayGuiScreen(new MainGui(message));
+        } else {
+            mc.displayGuiScreen(previousScreen);
+        }
     }
 }

@@ -26,8 +26,6 @@ import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /*
  * Created by boomboompower on 20/06/2017.
@@ -50,17 +48,24 @@ public class MainLoader {
             this.mainDir.mkdirs();
         }
 
-        BufferedReader f;
-        List options;
-
         for (File file : this.mainDir.listFiles()) {
             if (file.getName().endsWith("info")) {
                 try {
-                    f = new BufferedReader(new FileReader(file));
-                    options = f.lines().collect(Collectors.toList());
+                    FileReader fileReader = new FileReader(file);
+                    BufferedReader reader = new BufferedReader(fileReader);
+                    StringBuilder builder = new StringBuilder();
 
-                    if (options.size() > 0) {
-                        this.messages.add(new Message(new JsonParser().parse((String) options.get(0)).getAsJsonObject()));
+                    String current;
+                    while ((current = reader.readLine()) != null) {
+                        builder.append(current);
+                    }
+                    JsonObject o = new JsonParser().parse(builder.toString()).getAsJsonObject();
+
+                    if (o.size() > 0) {
+                        if (o.has("name") && has(o.get("name").getAsString())) {
+                            return;
+                        }
+                        this.messages.add(new Message(o));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -78,8 +83,8 @@ public class MainLoader {
     }
 
     public void saveAll() {
-        for (Message m : this.messages) {
-            m.save();
+        for (Message message : this.messages) {
+            message.save();
         }
     }
 
@@ -90,27 +95,23 @@ public class MainLoader {
     }
 
     protected boolean has(final String name) {
-        boolean has = false;
-
-        for (Message m : this.messages) {
-            if (!has) {
-                has = m.getName().equalsIgnoreCase(name);
-            } else {
-                break;
+        for (Message message : this.messages) {
+            if (message.getName().equalsIgnoreCase(name)) {
+                return true;
             }
         }
-        return has;
+        return false;
     }
 
     protected JsonObject create(String name, String message, int x, int y, boolean shadow, boolean isChroma) {
-        JsonObject o = new JsonObject();
-        o.addProperty("name", name);
-        o.addProperty("message", message);
-        o.addProperty("usechroma", isChroma);
-        o.addProperty("useshadow", shadow);
-        o.addProperty("x", x);
-        o.addProperty("y", y);
-        return o.getAsJsonObject();
+        JsonObject newObject = new JsonObject();
+        newObject.addProperty("name", name);
+        newObject.addProperty("message", message);
+        newObject.addProperty("usechroma", isChroma);
+        newObject.addProperty("useshadow", shadow);
+        newObject.addProperty("x", x);
+        newObject.addProperty("y", y);
+        return newObject.getAsJsonObject();
     }
 
     public void renderAll(boolean drawBox) {

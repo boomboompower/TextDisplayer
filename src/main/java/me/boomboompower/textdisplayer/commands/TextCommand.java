@@ -50,7 +50,7 @@ public class TextCommand implements ICommand {
         if (args.length == 0) {
             new MainGui().display();
         } else {
-            new MainGui(get(args)).display();
+            new MainGui(true, get(args)).display();
         }
     }
 

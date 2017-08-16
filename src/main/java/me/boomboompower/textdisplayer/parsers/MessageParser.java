@@ -17,6 +17,7 @@
 
 package me.boomboompower.textdisplayer.parsers;
 
+import me.boomboompower.textdisplayer.parsers.normal.CPSParser;
 import me.boomboompower.textdisplayer.parsers.normal.DirectionParser;
 import me.boomboompower.textdisplayer.parsers.normal.ItemParser;
 import me.boomboompower.textdisplayer.parsers.normal.MainParser;
@@ -38,7 +39,6 @@ public abstract class MessageParser {
      * Default constructor for MessageParser
      */
     public MessageParser() {
-
     }
 
     /**
@@ -68,6 +68,11 @@ public abstract class MessageParser {
         parsers.put("MainParser", new MainParser());
         parsers.put("ItemParser", new ItemParser());
         parsers.put("DirectionParser", new DirectionParser());
+        parsers.put("CPSParser", new CPSParser());
+    }
+
+    public static MessageParser getParser(String name) {
+        return parsers.getOrDefault(name, null);
     }
 
     /**

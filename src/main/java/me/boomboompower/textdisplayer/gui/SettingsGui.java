@@ -18,6 +18,9 @@
 package me.boomboompower.textdisplayer.gui;
 
 import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.gui.utils.ModernButton;
+import me.boomboompower.textdisplayer.gui.utils.ModernSlider;
+import me.boomboompower.textdisplayer.gui.utils.ModernTextBox;
 import me.boomboompower.textdisplayer.loading.Message;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
@@ -26,17 +29,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.config.GuiSlider;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
+//        - 118
 //        - 94
 //        - 70
 //        - 46
@@ -45,6 +48,7 @@ import java.awt.*;
 //        + 26
 //        + 50
 //        + 74
+//        + 98
 
 public class SettingsGui extends GuiScreen {
 
@@ -53,7 +57,7 @@ public class SettingsGui extends GuiScreen {
 
     private boolean removed;
 
-    private GuiTextField text;
+    private ModernTextBox text;
 
     private GuiButton update;
     private GuiButton remove;
@@ -73,13 +77,14 @@ public class SettingsGui extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
 
-        text = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 75, this.height / 2 - 22, 150, 20);
+        text = new ModernTextBox(0,this.width / 2 - 75, this.height / 2 - 46, 150, 20);
 
-        this.buttonList.add(this.update = new GuiButton(1, this.width / 2 - 100, this.height / 2 + 8, 200, 20, "Update"));
-        this.buttonList.add(this.remove = new GuiButton(2, this.width / 2 - 100, this.height / 2 + 32, 200, 20, "Remove"));
-        this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 2 + 56, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
-        this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 2 + 80, 200, 20, "Use Chroma: " + (message.isChroma() ? ENABLED : DISABLED)));
-        this.buttonList.add(new GuiSlider(5, this.width / 2 - 100, this.height / 2 + 104, 200, 20, "Scale: ", "", 100.0D, 200.0D, message.getScale() * 100, false, true, (guiSlider) -> {}) {
+        this.buttonList.add(this.update = new ModernButton(1, this.width / 2 - 100, this.height / 2 - 22, 200, 20, "Update"));
+        this.buttonList.add(this.remove = new ModernButton(2, this.width / 2 - 100, this.height / 2 + 2, 200, 20, "Remove"));
+        this.buttonList.add(new ModernButton(3, this.width / 2 - 100, this.height / 2 + 26, 200, 20, "Use Shadow: " + (message.useShadow() ? ENABLED : DISABLED)));
+        this.buttonList.add(new ModernButton(4, this.width / 2 - 100, this.height / 2 + 50, 200, 20, "Use Chroma: " + (message.isChroma() ? ENABLED : DISABLED)));
+        this.buttonList.add(new ModernSlider(5, this.width / 2 - 100, this.height / 2 + 74, 200, 20, "Scale: ", 100.0D, 200.0D, message.getScale() * 100) {
+            @Override
             public void updateSlider() {
                 super.updateSlider();
                 message.setScale((float) (getValue() / 100.0D));
@@ -108,7 +113,7 @@ public class SettingsGui extends GuiScreen {
     @Override
     protected void keyTyped(char c, int key)  {
         if (key == 1) {
-            mc.displayGuiScreen(previous);
+            displayPrevious(null);
         } else {
             text.textboxKeyTyped(c, key);
         }
@@ -133,21 +138,24 @@ public class SettingsGui extends GuiScreen {
         switch (button.id) {
             case 1:
                 message.setMessage(this.text.getText());
-                sendChatMessage(String.format("Updated %s!", message.formatName(message.getName())));
-                mc.displayGuiScreen(previous);
+                displayPrevious("&aModified " + message.getName());
                 break;
             case 2:
-                message.remove();
-                this.removed = true;
-                mc.displayGuiScreen(previous);
+                boolean hasRemoved = message.remove();
+                if (hasRemoved) {
+                    this.removed = true;
+                    displayPrevious("&aSuccessfully removed " + message.getName());
+                } else {
+                    displayPrevious("An issue occured while removing " + message.getName());
+                }
                 break;
             case 3:
                 this.message.setUseShadow(!this.message.useShadow());
-                button.displayString = "Use Shadow: " + (this.message.useShadow() ? ENABLED : DISABLED);
+                ((ModernButton) button).displayString = "Use Shadow: " + (this.message.useShadow() ? ENABLED : DISABLED);
                 break;
             case 4:
                 this.message.setUseChroma(!this.message.isChroma());
-                button.displayString = "Use Chroma: " + (this.message.isChroma() ? ENABLED : DISABLED);
+                ((ModernButton) button).displayString = "Use Chroma: " + (this.message.isChroma() ? ENABLED : DISABLED);
                 break;
         }
     }
@@ -179,17 +187,25 @@ public class SettingsGui extends GuiScreen {
     }
 
     private void drawTitle(String text) {
-        drawCenteredString(mc.fontRendererObj, text, this.width / 2, this.height / 2 - 75, Color.WHITE.getRGB());
-        drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, this.height / 2 - 65, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, text, this.width / 2, this.height / 2 - 99, Color.WHITE.getRGB());
+        drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, this.height / 2 - 89, Color.WHITE.getRGB());
     }
 
     private void drawMessage() {
-        drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 50, Color.WHITE.getRGB());
+        drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 74, Color.WHITE.getRGB());
 
         GlStateManager.pushMatrix();
-        GlStateManager.scale(message.getScale(), message.getScale(), message.getScale());
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) (this.width / 2 - message.getScale()), (int) (this.height / 2 - 40 - message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
+        GL11.glScaled(message.getScale(), message.getScale(), 1.0);
+        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) ((this.width / 2) / message.getScale()), (int) ((this.height / 2 - 64) / message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
         GlStateManager.popMatrix();
+    }
+
+    private void displayPrevious(String message) {
+        if (previous instanceof MainGui && message != null) {
+            mc.displayGuiScreen(new MainGui(message));
+        } else {
+            mc.displayGuiScreen(previous);
+        }
     }
 
     public void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color, boolean shadow) {
