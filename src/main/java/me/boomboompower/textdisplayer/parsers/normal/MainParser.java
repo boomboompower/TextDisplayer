@@ -36,7 +36,8 @@ public class MainParser extends MessageParser {
     @Override
     public ParsedMessage parse(ParsedMessage message) {
         return message.replace("USERNAME", mc.getSession().getUsername())
-                .replace("HEALTH", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())))
+                .replace("HEALTH", getHealth(HealthType.TOTAL))
+                .replace("HEARTS", getHealth(HealthType.HEARTS))
                 .replace("HUNGER", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()))
 
                 .replace("SERVERNAME", getServerData(ServerDataType.NAME))
@@ -81,6 +82,17 @@ public class MainParser extends MessageParser {
         }
     }
 
+    public String getHealth(HealthType type) {
+        switch (type) {
+            case TOTAL:
+                return String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth()));
+            case HEARTS:
+                return String.valueOf(((double) MathHelper.floor_double(mc.thePlayer.getHealth()) / 2));
+            default:
+                return "20";
+        }
+    }
+
     public String getPlayerCount() {
         if (mc.theWorld == null) return "0";
 
@@ -104,5 +116,10 @@ public class MainParser extends MessageParser {
         PING,
         ADDRESS,
         POPULATION
+    }
+
+    private enum HealthType {
+        HEARTS,
+        TOTAL
     }
 }
