@@ -18,6 +18,7 @@
 package me.boomboompower.textdisplayer.parsers.normal;
 
 import me.boomboompower.textdisplayer.parsers.MessageParser;
+import me.boomboompower.textdisplayer.parsers.ParsedMessage;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
@@ -35,30 +36,31 @@ public class ItemParser extends MessageParser {
         return "ItemParser";
     }
 
-    public String parse(String message) {
-        return message.replaceAll("\\{HAND_NAME}", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(getName())))
-                .replaceAll("\\{HAND_TOTALAMOUNT}", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getTotalAmount())))
-                .replaceAll("\\{HAND_AMOUNT}", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getAmount())))
-                .replaceAll("\\{HAND_DURA}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(getDura())))
-                .replaceAll("\\{HAND_MAX}", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(getMaxDura())))
+    @Override
+    public ParsedMessage parse(ParsedMessage message) {
+        return message.replace("HAND_NAME", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(getName())))
+                .replace("HAND_TOTALAMOUNT", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getTotalAmount())))
+                .replace("HAND_AMOUNT", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getAmount())))
+                .replace("HAND_DURA", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(getDura())))
+                .replace("HAND_MAX", (mc.thePlayer.getHeldItem() == null ? defaultValue : String.valueOf(getMaxDura())))
 
-                .replaceAll("\\{ARROWCOUNT}", (mc.thePlayer.getInventory() == null ? defaultValue : String.valueOf(getArrowCount())))
+                .replace("ARROWCOUNT", (mc.thePlayer.getInventory() == null ? defaultValue : String.valueOf(getArrowCount())))
 
-                .replaceAll("\\{ARMOR_HEAD_NAME}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(3))))
-                .replaceAll("\\{ARMOR_HEAD_DURA}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(3)))))
-                .replaceAll("\\{ARMOR_HEAD_MAX}", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(3)))))
+                .replace("ARMOR_HEAD_NAME", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(3))))
+                .replace("ARMOR_HEAD_DURA", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(3)))))
+                .replace("ARMOR_HEAD_MAX", (mc.thePlayer.inventory.armorItemInSlot(3) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(3)))))
 
-                .replaceAll("\\{ARMOR_CHEST_NAME}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(2))))
-                .replaceAll("\\{ARMOR_CHEST_DURA}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(2)))))
-                .replaceAll("\\{ARMOR_CHEST_MAX}", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(2)))))
+                .replace("ARMOR_CHEST_NAME", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(2))))
+                .replace("ARMOR_CHEST_DURA", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(2)))))
+                .replace("ARMOR_CHEST_MAX", (mc.thePlayer.inventory.armorItemInSlot(2) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(2)))))
 
-                .replaceAll("\\{ARMOR_LEGS_NAME}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(1))))
-                .replaceAll("\\{ARMOR_LEGS_DURA}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(1)))))
-                .replaceAll("\\{ARMOR_LEGS_MAX}", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(1)))))
+                .replace("ARMOR_LEGS_NAME", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(1))))
+                .replace("ARMOR_LEGS_DURA", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(1)))))
+                .replace("ARMOR_LEGS_MAX", (mc.thePlayer.inventory.armorItemInSlot(1) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(1)))))
 
-                .replaceAll("\\{ARMOR_BOOTS_NAME}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(0))))
-                .replaceAll("\\{ARMOR_BOOTS_DURA}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(0)))))
-                .replaceAll("\\{ARMOR_BOOTS_MAX}", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(0)))));
+                .replace("ARMOR_BOOTS_NAME", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultName : getItemName(mc.thePlayer.inventory.armorItemInSlot(0))))
+                .replace("ARMOR_BOOTS_DURA", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(getDura(mc.thePlayer.inventory.armorItemInSlot(0)))))
+                .replace("ARMOR_BOOTS_MAX", (mc.thePlayer.inventory.armorItemInSlot(0) == null ? defaultValue : String.valueOf(getMaxDura(mc.thePlayer.inventory.armorItemInSlot(0)))));
     }
 
     public String getItemName() {

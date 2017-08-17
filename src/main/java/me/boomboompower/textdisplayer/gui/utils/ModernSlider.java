@@ -18,11 +18,11 @@
 package me.boomboompower.textdisplayer.gui.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
+import net.minecraft.client.gui.GuiButton;
 
 import java.awt.*;
 
-public class ModernSlider extends GuiButtonExt {
+public class ModernSlider extends GuiButton {
 
     public boolean dragging = false;
 
@@ -49,7 +49,6 @@ public class ModernSlider extends GuiButtonExt {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int k = this.getHoverState(this.hovered);
 
             if (this.enabled) {
                 drawRect(this.xPosition, this.yPosition, this.xPosition + width, this.yPosition + height, new Color(95, 255, 95, 75).getRGB());
@@ -76,38 +75,27 @@ public class ModernSlider extends GuiButtonExt {
         }
     }
 
-    /**
-     * Returns 0 if the button is disabled, 1 if the mouse is NOT hovering over this button and 2 if it IS hovering over
-     * this button.
-     */
     @Override
-    public int getHoverState(boolean par1) {
+    public int getHoverState(boolean mouseOver) {
         return 0;
     }
 
-    /**
-     * Fired when the mouse button is dragged. Equivalent of MouseListener.mouseDragged(MouseEvent e).
-     */
     @Override
-    protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3) {
+    protected void mouseDragged(Minecraft par1Minecraft, int mouseX, int mouseY) {
         if (this.visible) {
             if (this.dragging) {
-                this.sliderValue = (par2 - (this.xPosition + 4)) / (float) (this.width - 8);
+                this.sliderValue = (mouseX - (this.xPosition + 4)) / (float) (this.width - 8);
                 updateSlider();
             }
 
-            drawRect(this.xPosition + (int) (this.sliderValue * (float) (this.width - 8)), this.yPosition, this.xPosition + (int) (this.sliderValue * (float) (this.width - 8)) + 4, this.yPosition + this.height, Color.WHITE.getRGB());
+            drawRect(this.xPosition + (int) (this.sliderValue * (float) (this.width - 4)), this.yPosition, this.xPosition + (int) (this.sliderValue * (float) (this.width - 4)) + 4, this.yPosition + this.height, Color.WHITE.getRGB());
         }
     }
 
-    /**
-     * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
-     * e).
-     */
     @Override
-    public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3) {
-        if (super.mousePressed(par1Minecraft, par2, par3)) {
-            this.sliderValue = (float) (par2 - (this.xPosition + 4)) / (float) (this.width - 8);
+    public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
+        if (super.mousePressed(minecraft, mouseX, mouseY)) {
+            this.sliderValue = (float) (mouseX - (this.xPosition + 4)) / (float) (this.width - 8);
             updateSlider();
             this.dragging = true;
             return true;
@@ -128,11 +116,8 @@ public class ModernSlider extends GuiButtonExt {
         displayString = prefix + new StringBuilder(Integer.toString((int) Math.round(sliderValue * (maxValue - minValue) + minValue)));
     }
 
-    /**
-     * Fired when the mouse button is released. Equivalent of MouseListener.mouseReleased(MouseEvent e).
-     */
     @Override
-    public void mouseReleased(int par1, int par2) {
+    public void mouseReleased(int mouseX, int mouseY) {
         this.dragging = false;
     }
 
@@ -140,7 +125,7 @@ public class ModernSlider extends GuiButtonExt {
         return sliderValue * (maxValue - minValue) + minValue;
     }
 
-    public void setValue(double d) {
-        this.sliderValue = (d - minValue) / (maxValue - minValue);
+    public void setValue(double value) {
+        this.sliderValue = (value - minValue) / (maxValue - minValue);
     }
 }

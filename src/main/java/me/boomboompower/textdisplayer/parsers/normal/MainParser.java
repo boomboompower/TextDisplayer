@@ -18,6 +18,7 @@
 package me.boomboompower.textdisplayer.parsers.normal;
 
 import me.boomboompower.textdisplayer.parsers.MessageParser;
+import me.boomboompower.textdisplayer.parsers.ParsedMessage;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,31 +34,75 @@ public class MainParser extends MessageParser {
     }
 
     @Override
-    public String parse(String message) {
-        message = message.replaceAll("\\{USERNAME}", mc.getSession().getUsername())
-                .replaceAll("\\{HEALTH}", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())))
-                .replaceAll("\\{HUNGER}", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()))
+    public ParsedMessage parse(ParsedMessage message) {
+        return message.replace("USERNAME", mc.getSession().getUsername())
+                .replace("HEALTH", String.valueOf(MathHelper.floor_double(mc.thePlayer.getHealth())))
+                .replace("HUNGER", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()))
 
-                .replaceAll("\\{SERVERNAME}", (mc.getCurrentServerData() == null ? "Unknown" : mc.getCurrentServerData().serverName))
-                .replaceAll("\\{SERVERIP}", (mc.getCurrentServerData() == null ? "localhost" : mc.getCurrentServerData().serverIP))
-                .replaceAll("\\{PLAYERCOUNT}", String.valueOf(getPlayerCount()));
+                .replace("SERVERNAME", getServerData(ServerDataType.NAME))
+                .replace("SERVERIP", getServerData(ServerDataType.ADDRESS))
+                .replace("SERVERPING", getServerData(ServerDataType.PING))
+                .replace("SERVERPOPULATION", getServerData(ServerDataType.POPULATION))
+                .replace("PLAYERCOUNT", getPlayerCount())
 
-        if (mc.getRenderViewEntity() != null) {
-            message = message.replaceAll("\\{X}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posX)))
-                    .replaceAll("\\{Y}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posY)))
-                    .replaceAll("\\{Z}", String.valueOf(MathHelper.floor_double(mc.getRenderViewEntity().posZ)));
-        }
-        return message;
+                .replace("X", getCoord(Coord.X))
+                .replace("Y", getCoord(Coord.Y))
+                .replace("Z", getCoord(Coord.Z));
     }
 
-    public int getPlayerCount() {
-        if (mc.theWorld == null) return 0;
+    public String getCoord(Coord type) {
+        if (mc.getRenderViewEntity() == null) return "0";
+
+        switch (type) {
+            case X:
+                return String.valueOf(mc.getRenderViewEntity().posX);
+            case Y:
+                return String.valueOf(mc.getRenderViewEntity().posY);
+            case Z:
+                return String.valueOf(mc.getRenderViewEntity().posZ);
+            default:
+                return "0";
+        }
+    }
+
+    public String getServerData(ServerDataType type) {
+        boolean isServerDataNull = mc.getCurrentServerData() == null;
+        switch (type) {
+            case NAME:
+                return isServerDataNull ? "Unknown" : mc.getCurrentServerData().serverName;
+            case ADDRESS:
+                return isServerDataNull ? "localhost" : mc.getCurrentServerData().serverIP;
+            case PING:
+                return isServerDataNull ? "0ms" : mc.getCurrentServerData().pingToServer + "ms";
+            case POPULATION:
+                return isServerDataNull ? "0/0" : mc.getCurrentServerData().populationInfo;
+            default:
+                return "Unknown";
+        }
+    }
+
+    public String getPlayerCount() {
+        if (mc.theWorld == null) return "0";
+
         int players = 0;
         for (EntityPlayer player : mc.theWorld.playerEntities) {
             if (!player.isInvisibleToPlayer(mc.thePlayer) && !player.isPotionActive(14)) {
                 players += 1;
             }
         }
-        return players;
+        return String.valueOf(players);
+    }
+
+    private enum Coord {
+        X,
+        Y,
+        Z
+    }
+
+    private enum ServerDataType {
+        NAME,
+        PING,
+        ADDRESS,
+        POPULATION
     }
 }

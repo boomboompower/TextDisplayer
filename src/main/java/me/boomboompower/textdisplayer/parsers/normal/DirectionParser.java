@@ -18,6 +18,7 @@
 package me.boomboompower.textdisplayer.parsers.normal;
 
 import me.boomboompower.textdisplayer.parsers.MessageParser;
+import me.boomboompower.textdisplayer.parsers.ParsedMessage;
 
 import net.minecraft.client.Minecraft;
 
@@ -54,7 +55,7 @@ public class DirectionParser extends MessageParser {
     }
 
     @Override
-    public String parse(String input) {
-        return input.replaceAll("\\{FACING_LARGE}", getLargeDirection()).replaceAll("\\{FACING_SMALL}", getSmallDirection());
+    public ParsedMessage parse(ParsedMessage input) {
+        return input.replace("FACING_LARGE", getLargeDirection()).replace("FACING_SMALL", getSmallDirection());
     }
 }

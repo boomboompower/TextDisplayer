@@ -17,10 +17,7 @@
 
 package me.boomboompower.textdisplayer.parsers;
 
-import me.boomboompower.textdisplayer.parsers.normal.CPSParser;
-import me.boomboompower.textdisplayer.parsers.normal.DirectionParser;
-import me.boomboompower.textdisplayer.parsers.normal.ItemParser;
-import me.boomboompower.textdisplayer.parsers.normal.MainParser;
+import me.boomboompower.textdisplayer.parsers.normal.*;
 
 import java.util.HashMap;
 
@@ -49,7 +46,7 @@ public abstract class MessageParser {
      */
     public static String parseAll(String input) {
         for (MessageParser parser : parsers.values()) {
-            input = parser.parse(input);
+            input = parser.parse(new ParsedMessage(input)).getMessage();
         }
         return input;
     }
@@ -69,6 +66,7 @@ public abstract class MessageParser {
         parsers.put("ItemParser", new ItemParser());
         parsers.put("DirectionParser", new DirectionParser());
         parsers.put("CPSParser", new CPSParser());
+        parsers.put("FightingParser", new FightingParser());
     }
 
     public static MessageParser getParser(String name) {
@@ -85,8 +83,8 @@ public abstract class MessageParser {
     /**
      * Parses the given text and formats it
      *
-     * @param input text to format
+     * @param parsedMessage message to format
      * @return the formatted message
      */
-    public abstract String parse(String input);
+    public abstract ParsedMessage parse(ParsedMessage parsedMessage);
 }

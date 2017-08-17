@@ -17,7 +17,14 @@
 
 package me.boomboompower.textdisplayer.parsers.normal;
 
+import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
+import me.boomboompower.textdisplayer.parsers.ParsedMessage;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import org.lwjgl.input.Mouse;
 
@@ -32,18 +39,22 @@ public class CPSParser extends MessageParser {
     private boolean lastLeft;
     private boolean lastRight;
 
+    public CPSParser() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     @Override
     public String getName() {
         return "CPSParser";
     }
 
     @Override
-    public String parse(String input) {
-        return input.replaceAll("\\{CPS}", String.valueOf(getLeftCPS()))
-                .replaceAll("\\{LEFT_CPS}", String.valueOf(getLeftCPS()))
-                .replaceAll("\\{CPS_LEFT}", String.valueOf(getLeftCPS()))
-                .replaceAll("\\{RIGHT_CPS}", String.valueOf(getRightCPS()))
-                .replaceAll("\\{CPS_RIGHT}", String.valueOf(getRightCPS()));
+    public ParsedMessage parse(ParsedMessage input) {
+        return input.replace("CPS", String.valueOf(getLeftCPS()))
+                .replace("LEFT_CPS", String.valueOf(getLeftCPS()))
+                .replace("CPS_LEFT", String.valueOf(getLeftCPS()))
+                .replace("RIGHT_CPS", String.valueOf(getRightCPS()))
+                .replace("CPS_RIGHT", String.valueOf(getRightCPS()));
     }
 
     public int getLeftCPS() {
@@ -58,7 +69,10 @@ public class CPSParser extends MessageParser {
         return this.rightClicks.size();
     }
 
-    public void incrementCPS() {
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onTick(TickEvent.RenderTickEvent event) {
+        if (TextDisplayer.getInstance().getWebsiteUtils().isDisabled()) return;
+
         boolean isClickedLeft = Mouse.isButtonDown(0);
         if (isClickedLeft != this.lastLeft) {
             this.lastLeft = isClickedLeft;

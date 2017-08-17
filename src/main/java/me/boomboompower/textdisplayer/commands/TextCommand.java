@@ -17,6 +17,7 @@
 
 package me.boomboompower.textdisplayer.commands;
 
+import me.boomboompower.textdisplayer.TextDisplayer;
 import me.boomboompower.textdisplayer.gui.MainGui;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 
@@ -47,10 +48,15 @@ public class TextCommand implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 0) {
-            new MainGui().display();
+        if (TextDisplayer.getInstance().getWebsiteUtils().isDisabled()) {
+            TextDisplayer.getInstance().sendMessage("&cTextDisplayer is currently disabled.");
+            TextDisplayer.getInstance().sendMessage("&cCheck back soon for more information!");
         } else {
-            new MainGui(true, get(args)).display();
+            if (args.length == 0) {
+                new MainGui().display();
+            } else {
+                new MainGui(true, get(args)).display();
+            }
         }
     }
 

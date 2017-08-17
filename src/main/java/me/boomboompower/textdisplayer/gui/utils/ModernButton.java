@@ -20,9 +20,7 @@ package me.boomboompower.textdisplayer.gui.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
@@ -57,10 +55,7 @@ public class ModernButton extends GuiButton {
         this.displayString = buttonText;
     }
 
-    /**
-     * Returns 0 if the button is disabled, 1 if the mouse is NOT hovering over this button and 2 if it IS hovering over
-     * this button.
-     */
+    @Override
     protected int getHoverState(boolean mouseOver) {
         int i = 1;
 
@@ -72,15 +67,10 @@ public class ModernButton extends GuiButton {
         return i;
     }
 
-    /**
-     * Draws this button to the screen.
-     */
+    @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
-            FontRenderer fontrenderer = mc.fontRendererObj;
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int i = this.getHoverState(this.hovered);
 
             if (this.enabled) {
                 drawRect(this.xPosition, this.yPosition, this.xPosition + width, this.yPosition + height, new Color(255, 255, 255, 75).getRGB());
@@ -97,35 +87,33 @@ public class ModernButton extends GuiButton {
                 j = 16777120;
             }
 
-            fontrenderer.drawString(this.displayString, (this.xPosition + this.width / 2 - fontrenderer.getStringWidth(this.displayString) / 2), this.yPosition + (this.height - 8) / 2, j, false);
+            mc.fontRendererObj.drawString(this.displayString, (this.xPosition + this.width / 2 - mc.fontRendererObj.getStringWidth(this.displayString) / 2), this.yPosition + (this.height - 8) / 2, j, false);
         }
     }
 
-    /**
-     * Returns true if the mouse has been pressed on this control. Equivalent of MouseListener.mousePressed(MouseEvent
-     * e).
-     */
+    @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
         return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
     }
 
-    /**
-     * Whether the mouse cursor is currently over the button.
-     */
+    @Override
     public boolean isMouseOver()
     {
         return this.hovered;
     }
 
+    @Override
     public void playPressSound(SoundHandler soundHandlerIn) {
         soundHandlerIn.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
     }
 
+    @Override
     public int getButtonWidth()
     {
         return this.width;
     }
 
+    @Override
     public void setWidth(int width)
     {
         this.width = width;

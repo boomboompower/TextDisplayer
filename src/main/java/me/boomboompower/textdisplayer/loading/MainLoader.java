@@ -49,7 +49,7 @@ public class MainLoader {
         }
 
         for (File file : this.mainDir.listFiles()) {
-            if (file.getName().endsWith("info")) {
+            if (file.getName().endsWith("info") && !file.isDirectory()) {
                 try {
                     FileReader fileReader = new FileReader(file);
                     BufferedReader reader = new BufferedReader(fileReader);
@@ -59,13 +59,13 @@ public class MainLoader {
                     while ((current = reader.readLine()) != null) {
                         builder.append(current);
                     }
-                    JsonObject o = new JsonParser().parse(builder.toString()).getAsJsonObject();
+                    JsonObject object = new JsonParser().parse(builder.toString()).getAsJsonObject();
 
-                    if (o.size() > 0) {
-                        if (o.has("name") && has(o.get("name").getAsString())) {
+                    if (object.size() > 0) {
+                        if (object.has("name") && has(object.get("name").getAsString())) {
                             return;
                         }
-                        this.messages.add(new Message(o));
+                        this.messages.add(new Message(object));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();

@@ -18,29 +18,32 @@
 package me.boomboompower.textdisplayer;
 
 import me.boomboompower.textdisplayer.gui.MainGui;
-
-import me.boomboompower.textdisplayer.parsers.MessageParser;
-import me.boomboompower.textdisplayer.parsers.normal.CPSParser;
+import me.boomboompower.textdisplayer.utils.ChatColor;
+import me.boomboompower.textdisplayer.utils.WebsiteUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.io.IOException;
 
 public class TextEvents {
 
     private final Minecraft mc = Minecraft.getMinecraft();
+    private boolean a = false;
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onGameTick(TickEvent.RenderTickEvent event) {
+        if (TextDisplayer.getInstance().getWebsiteUtils().isDisabled()) return;
+
         if (mc.currentScreen != null) {
             if (this.mc.currentScreen instanceof MainGui) {
                 try {
                     this.mc.currentScreen.handleInput();
-                } catch (IOException ex) {
-                    // Mehhhhhhhh
+                } catch (IOException ignored) {
                 }
             }
         } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo && mc.thePlayer != null) {
@@ -49,10 +52,65 @@ public class TextEvents {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void onTick(TickEvent.RenderTickEvent event) {
-        MessageParser parser = MessageParser.getParser("CPSParser");
-        if (parser != null) {
-            ((CPSParser) parser).incrementCPS();
+    public void onJoin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        WebsiteUtils utils = TextDisplayer.getInstance().getWebsiteUtils();
+
+        if (utils.isDisabled()) return;
+
+        if (utils.needsUpdate()) {
+            utils.runAsync(() -> {
+                try {
+                    Thread.sleep(3000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                while (Minecraft.getMinecraft().thePlayer == null) {
+                    try {
+                        Thread.sleep(100L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                sendMessage("&9&m---------------------------------------------");
+                sendMessage(" ");
+                sendMessage(" &b\u26AB &eTextDisplayer is out of date!");
+                sendMessage(" &b\u26AB &eDownload %s from the forum page!", "&6v" + utils.getUpdateVersion() + "&e");
+                sendMessage(" ");
+                sendMessage("&9&m---------------------------------------------");
+            });
         }
+        
+        if (!a && utils.isRunningNewerVersion()) {
+            a = true;
+            utils.runAsync(() -> {
+                try {
+                    Thread.sleep(3000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                while (Minecraft.getMinecraft().thePlayer == null) {
+                    try {
+                        Thread.sleep(100L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                sendMessage("&9&m-----------------------------------------------");
+                sendMessage(" ");
+                sendMessage(" &b\u26AB &aYou are running a newer version of TextDisplayer!");
+                sendMessage(" ");
+                sendMessage("&9&m-----------------------------------------------");
+            });
+        }
+    }
+
+    private void sendMessage(String message, Object... replacements) {
+        if (Minecraft.getMinecraft().thePlayer == null) return; // Safety first! :)
+
+        try {
+            message = String.format(message, replacements);
+        } catch (Exception ex) { }
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(ChatColor.translateAlternateColorCodes('&', message)));
     }
 }

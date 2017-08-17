@@ -22,6 +22,7 @@ import me.boomboompower.textdisplayer.loading.MainLoader;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 
+import me.boomboompower.textdisplayer.utils.WebsiteUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -39,6 +40,7 @@ public class TextDisplayer {
 
     public static final Integer MAX_CHARS = 100;
 
+    private WebsiteUtils websiteUtils;
     private MainLoader loader;
     private TextEvents events;
 
@@ -47,6 +49,7 @@ public class TextDisplayer {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        websiteUtils = new WebsiteUtils();
         loader = new MainLoader();
     }
 
@@ -56,7 +59,10 @@ public class TextDisplayer {
         ClientCommandHandler.instance.registerCommand(new TextCommand());
         MinecraftForge.EVENT_BUS.register(events = new TextEvents());
 
-        Minecraft.getMinecraft().addScheduledTask(() -> loader.begin());
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            websiteUtils.begin();
+            loader.begin();
+        });
     }
 
     public MainLoader getLoader() {
@@ -67,9 +73,17 @@ public class TextDisplayer {
         return this.events;
     }
 
+    public WebsiteUtils getWebsiteUtils() {
+        return this.websiteUtils;
+    }
+
     public void sendMessage(String message, Object... replacements) {
         if (Minecraft.getMinecraft().thePlayer == null) return; // Safety first! :)
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextDisplayer.PREFIX + ChatColor.translateAlternateColorCodes('&', String.format(message, replacements))));
+
+        try {
+            message = String.format(message, replacements);
+        } catch (Exception ex) { }
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextDisplayer.PREFIX + ChatColor.translateAlternateColorCodes('&', message)));
     }
 
     public static TextDisplayer getInstance() {
