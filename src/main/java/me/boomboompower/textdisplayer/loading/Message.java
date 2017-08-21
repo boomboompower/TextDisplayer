@@ -245,7 +245,7 @@ public class Message {
      * MISC
      */
 
-    public String formatName(String name) {
+    public static String formatName(String name) {
         char[] charList = name.toCharArray();
         StringBuilder builder = new StringBuilder();
         for (char c : charList) {

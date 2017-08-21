@@ -22,16 +22,16 @@ public class ParsedMessage {
     private String input;
 
     public ParsedMessage(String input) {
-        if (!isValid(input)) {
-            throw new IllegalArgumentException("Input cannot be null");
+        if (!isValidAndNotEmpty(input)) {
+            throw new IllegalArgumentException("Input cannot be null or empty!");
         }
 
         this.input = input;
     }
 
     public ParsedMessage replace(String key, String value) {
-        if (!isValid(getCharsOnly(key)) || !isValid(value)) {
-            throw new IllegalArgumentException("Key or value cannot be null or empty!");
+        if (!isValidAndNotEmpty(getCharsOnly(key)) || !isValid(value)) {
+            throw new IllegalArgumentException("Key or value cannot be null!");
         }
 
         this.input = input.replaceAll("\\{" + key + "}", value);
@@ -39,12 +39,24 @@ public class ParsedMessage {
         return this;
     }
 
+    public boolean containsKey(String key) {
+        if (!isValidAndNotEmpty(key)) {
+            throw new IllegalArgumentException("Key cannot be null or empty!");
+        }
+
+        return this.input.matches("\\{" + key +"}");
+    }
+
     public String getMessage() {
         return this.input;
     }
 
     private boolean isValid(String input) {
-        return input != null && !input.isEmpty();
+        return input != null;
+    }
+
+    private boolean isValidAndNotEmpty(String input) {
+        return isValid(input) && !input.isEmpty();
     }
 
     private String getCharsOnly(String input) {

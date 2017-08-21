@@ -24,9 +24,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class FightingParser extends MessageParser {
 
+    // Example UUIDs for reference
+    /*
+     * 254645c1-03b3-4a26-8069-c14bf72d8cfe
+     * 430fcd60-bb2f-4569-9a7e-3f4feb41d56e
+     * e517456e-84b2-4433-bcd6-15c850d3e9cb
+     *               ^
+     * This is always the same. A good way
+     * of detecting if the entity is a player
+     */
+
+
+    private int timer;
     private EntityPlayer lastDamaged;
 
     public FightingParser() {
@@ -46,7 +59,23 @@ public class FightingParser extends MessageParser {
     @SubscribeEvent
     public void onDamage(AttackEntityEvent entityEvent) {
         if (entityEvent.target instanceof EntityPlayer) {
+
+            // Making sure the player isn't fake (Delivery man etc)
+            if (entityEvent.target.getUniqueID().toString().charAt(14) != '4') {
+                return;
+            }
+
             this.lastDamaged = (EntityPlayer) entityEvent.target;
+            timer = 120;
+        }
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (this.timer > 0) {
+            this.timer--;
+        } else {
+            this.lastDamaged = null;
         }
     }
 

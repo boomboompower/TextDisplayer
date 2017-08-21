@@ -101,13 +101,13 @@ public class SettingsGui extends GuiScreen {
     public void drawScreen(int x, int y, float ticks) {
         drawDefaultBackground();
 
-        drawTitle(String.format("Modifying %s", ChatColor.GOLD + message.formatName(message.getName()) + ChatColor.WHITE));
+        drawTitle(String.format("Modifying %s", ChatColor.GOLD + message.getName() + ChatColor.WHITE));
         drawMessage();
-
-        update.enabled = ChatColor.formatUnformat('&', this.text.getText()).length() > 0;
 
         text.drawTextBox();
         super.drawScreen(x, y, ticks);
+
+        update.enabled = ChatColor.formatUnformat('&', this.text.getText()).length() > 0;
     }
 
     @Override

@@ -40,12 +40,6 @@ public class MainParser extends MessageParser {
                 .replace("HEARTS", getHealth(HealthType.HEARTS))
                 .replace("HUNGER", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()))
 
-                .replace("SERVERNAME", getServerData(ServerDataType.NAME))
-                .replace("SERVERIP", getServerData(ServerDataType.ADDRESS))
-                .replace("SERVERPING", getServerData(ServerDataType.PING))
-                .replace("SERVERPOPULATION", getServerData(ServerDataType.POPULATION))
-                .replace("PLAYERCOUNT", getPlayerCount())
-
                 .replace("X", getCoord(Coord.X))
                 .replace("Y", getCoord(Coord.Y))
                 .replace("Z", getCoord(Coord.Z));
@@ -66,22 +60,6 @@ public class MainParser extends MessageParser {
         }
     }
 
-    public String getServerData(ServerDataType type) {
-        boolean isServerDataNull = mc.getCurrentServerData() == null;
-        switch (type) {
-            case NAME:
-                return isServerDataNull ? "Unknown" : mc.getCurrentServerData().serverName;
-            case ADDRESS:
-                return isServerDataNull ? "localhost" : mc.getCurrentServerData().serverIP;
-            case PING:
-                return isServerDataNull ? "0ms" : mc.getCurrentServerData().pingToServer + "ms";
-            case POPULATION:
-                return isServerDataNull ? "0/0" : mc.getCurrentServerData().populationInfo;
-            default:
-                return "Unknown";
-        }
-    }
-
     public String getHealth(HealthType type) {
         switch (type) {
             case TOTAL:
@@ -93,29 +71,10 @@ public class MainParser extends MessageParser {
         }
     }
 
-    public String getPlayerCount() {
-        if (mc.theWorld == null) return "0";
-
-        int players = 0;
-        for (EntityPlayer player : mc.theWorld.playerEntities) {
-            if (!player.isInvisibleToPlayer(mc.thePlayer) && !player.isPotionActive(14)) {
-                players += 1;
-            }
-        }
-        return String.valueOf(players);
-    }
-
     private enum Coord {
         X,
         Y,
         Z
-    }
-
-    private enum ServerDataType {
-        NAME,
-        PING,
-        ADDRESS,
-        POPULATION
     }
 
     private enum HealthType {

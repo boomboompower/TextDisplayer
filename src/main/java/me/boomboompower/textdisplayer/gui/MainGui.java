@@ -206,7 +206,7 @@ public class MainGui extends GuiScreen {
             case 1:
                 String message = ChatColor.formatUnformat('&', this.text.getText());
                 if (!message.isEmpty()) {
-                    TextDisplayer.getInstance().getLoader().create(message.contains(" ") ? message.split(" ")[0] : message, text.getText(), this.useShadow, this.useChroma);
+                    TextDisplayer.getInstance().getLoader().create(Message.formatName(message), text.getText(), this.useShadow, this.useChroma);
                     this.text.setText("");
                 } else {
                     sendChatMessage("No text provided!");

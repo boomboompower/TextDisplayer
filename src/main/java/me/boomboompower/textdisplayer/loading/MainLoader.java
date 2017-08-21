@@ -61,7 +61,7 @@ public class MainLoader {
                     }
                     JsonObject object = new JsonParser().parse(builder.toString()).getAsJsonObject();
 
-                    if (object.size() > 0) {
+                    if (object.entrySet().size() > 0) {
                         if (object.has("name") && has(object.get("name").getAsString())) {
                             return;
                         }

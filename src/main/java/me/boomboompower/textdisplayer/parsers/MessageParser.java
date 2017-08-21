@@ -86,5 +86,5 @@ public abstract class MessageParser {
      * @param parsedMessage message to format
      * @return the formatted message
      */
-    public abstract ParsedMessage parse(ParsedMessage parsedMessage);
+    public abstract ParsedMessage parse(final ParsedMessage parsedMessage);
 }
