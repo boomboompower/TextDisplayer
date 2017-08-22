@@ -37,7 +37,7 @@ public class ItemParser extends MessageParser {
     }
 
     @Override
-    public ParsedMessage parse(ParsedMessage message) {
+    public ParsedMessage parse(final ParsedMessage message) {
         return message.replace("HAND_NAME", (mc.thePlayer.getHeldItem() == null ? defaultName : String.valueOf(getName())))
                 .replace("HAND_TOTALAMOUNT", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getTotalAmount())))
                 .replace("HAND_AMOUNT", (mc.thePlayer.getHeldItem() == null ? "1" : String.valueOf(getAmount())))

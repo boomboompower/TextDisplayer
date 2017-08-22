@@ -52,7 +52,7 @@ public class FightingParser extends MessageParser {
     }
 
     @Override
-    public ParsedMessage parse(ParsedMessage input) {
+    public ParsedMessage parse(final ParsedMessage input) {
         return input.replace("LASTDAMAGED", getLastPlayerDamagedName());
     }
 

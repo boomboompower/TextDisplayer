@@ -61,9 +61,9 @@ public class ParsedMessage {
 
     private String getCharsOnly(String input) {
         StringBuilder builder = new StringBuilder();
-        for (char c : input.toCharArray()) {
-            if (Character.isLetterOrDigit(c) || c == '_') {
-                builder.append(c);
+        for (char character : input.toCharArray()) {
+            if (Character.isLetterOrDigit(character) || character == '_') {
+                builder.append(character);
             }
         }
         return builder.toString().trim().isEmpty() ? null : builder.toString().trim();

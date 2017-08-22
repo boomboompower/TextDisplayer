@@ -20,17 +20,59 @@ package me.boomboompower.textdisplayer.parsers.normal;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.parsers.ParsedMessage;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class DirectionParser extends MessageParser {
+
+    private final String[] directionsSmall = new String[] {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
+    private final String[] directionsLarge = new String[] {"North", "North East", "East", "South East", "South", "South West", "West", "North West"};
+
+    private String blockName = "Air";
+
+    public DirectionParser() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     @Override
     public String getName() {
         return "DirectionParser";
     }
 
-    private final String[] directionsSmall = new String[] {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
-    private final String[] directionsLarge = new String[] {"North", "North East", "East", "South East", "South", "South West", "West", "North West"};
+    @Override
+    public ParsedMessage parse(final ParsedMessage input) {
+        return input.replace("FACING_LARGE", getLargeDirection()).replace("FACING_SMALL", getSmallDirection()).replace("LOOKING_AT", getBlockName());
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (Minecraft.getMinecraft().theWorld != null) {
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            MovingObjectPosition mop = player.rayTrace(200, 1.0F);
+            if (mop != null) {
+                Block blockLookingAt = player.worldObj.getBlockState(new BlockPos(mop.getBlockPos().getX(), mop.getBlockPos().getY(), mop.getBlockPos().getZ())).getBlock();
+                blockName = blockLookingAt.getLocalizedName();
+            } else {
+                blockName = "Air";
+            }
+        } else {
+            blockName = "Air";
+        }
+    }
+
+    public String getBlockName() {
+        if (this.blockName.equals("tile.air.name")) {
+            return "Air";
+        } else {
+            return this.blockName;
+        }
+    }
 
     public String getLargeDirection() {
         int yaw;
@@ -52,10 +94,5 @@ public class DirectionParser extends MessageParser {
         int partSize = 360 / this.directionsSmall.length;
         int index = (yaw + partSize / 2) / partSize;
         return this.directionsSmall[index % this.directionsSmall.length];
-    }
-
-    @Override
-    public ParsedMessage parse(ParsedMessage input) {
-        return input.replace("FACING_LARGE", getLargeDirection()).replace("FACING_SMALL", getSmallDirection());
     }
 }

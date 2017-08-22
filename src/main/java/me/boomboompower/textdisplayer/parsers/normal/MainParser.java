@@ -34,7 +34,7 @@ public class MainParser extends MessageParser {
     }
 
     @Override
-    public ParsedMessage parse(ParsedMessage message) {
+    public ParsedMessage parse(final ParsedMessage message) {
         return message.replace("USERNAME", mc.getSession().getUsername())
                 .replace("HEALTH", getHealth(HealthType.TOTAL))
                 .replace("HEARTS", getHealth(HealthType.HEARTS))

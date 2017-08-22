@@ -49,7 +49,7 @@ public class CPSParser extends MessageParser {
     }
 
     @Override
-    public ParsedMessage parse(ParsedMessage input) {
+    public ParsedMessage parse(final ParsedMessage input) {
         return input.replace("CPS", String.valueOf(getLeftCPS()))
                 .replace("LEFT_CPS", String.valueOf(getLeftCPS()))
                 .replace("CPS_LEFT", String.valueOf(getLeftCPS()))
