@@ -53,6 +53,7 @@ public class CPSParser extends MessageParser {
         return input.replace("CPS", String.valueOf(getLeftCPS()))
                 .replace("LEFT_CPS", String.valueOf(getLeftCPS()))
                 .replace("CPS_LEFT", String.valueOf(getLeftCPS()))
+                .replace("RCPS", String.valueOf(getRightCPS()))
                 .replace("RIGHT_CPS", String.valueOf(getRightCPS()))
                 .replace("CPS_RIGHT", String.valueOf(getRightCPS()));
     }
