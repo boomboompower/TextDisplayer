@@ -63,7 +63,7 @@ public class Message {
 
     public Message(JsonObject object) {
         this.name = object.has("name") ? object.get("name").getAsString() : MessageHelper.getRandomString(20);
-        this.message = object.has("message") ? object.get("message").getAsString() : "unknown";
+        this.message = object.has("message") && !object.get("message").getAsString().isEmpty() ? object.get("message").getAsString() : "unknown";
         this.isChroma = object.has("usechroma") && object.get("usechroma").getAsBoolean();
         this.useShadow = object.has("useshadow") && object.get("useshadow").getAsBoolean();
         this.a = object.has("a") && object.get("a").getAsBoolean();
