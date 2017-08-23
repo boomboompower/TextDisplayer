@@ -17,7 +17,7 @@
 
 package me.boomboompower.textdisplayer.gui;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 import me.boomboompower.textdisplayer.gui.utils.ModernButton;
 import me.boomboompower.textdisplayer.gui.utils.ModernSlider;
 import me.boomboompower.textdisplayer.gui.utils.ModernTextBox;
@@ -59,8 +59,8 @@ public class SettingsGui extends GuiScreen {
 
     private ModernTextBox text;
 
-    private GuiButton update;
-    private GuiButton remove;
+    private ModernButton update;
+    private ModernButton remove;
     
     private GuiScreen previous;
     
@@ -93,7 +93,7 @@ public class SettingsGui extends GuiScreen {
 
         text.setFocused(true);
         text.setCanLoseFocus(false);
-        text.setMaxStringLength(TextDisplayer.MAX_CHARS);
+        text.setMaxStringLength(TextDisplayerMod.MAX_CHARS);
         text.setText(message.getRawMessage());
     }
 
@@ -173,7 +173,7 @@ public class SettingsGui extends GuiScreen {
 
     @Override
     public void sendChatMessage(String message) {
-        TextDisplayer.getInstance().sendMessage(message);
+        TextDisplayerMod.getInstance().sendMessage(message);
     }
 
     public void display() {

@@ -17,7 +17,7 @@
 
 package me.boomboompower.textdisplayer.commands;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 import me.boomboompower.textdisplayer.gui.MainGui;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 
@@ -48,9 +48,9 @@ public class TextCommand implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
-        if (TextDisplayer.getInstance().getWebsiteUtils().isDisabled()) {
-            TextDisplayer.getInstance().sendMessage("&cTextDisplayer is currently disabled.");
-            TextDisplayer.getInstance().sendMessage("&cCheck back soon for more information!");
+        if (TextDisplayerMod.getInstance().getWebsiteUtils().isDisabled()) {
+            TextDisplayerMod.getInstance().sendMessage("&cTextDisplayer is currently disabled.");
+            TextDisplayerMod.getInstance().sendMessage("&cCheck back soon for more information!");
         } else {
             if (args.length == 0) {
                 new MainGui().display();

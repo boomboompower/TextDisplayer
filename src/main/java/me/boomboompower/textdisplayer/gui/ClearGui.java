@@ -17,7 +17,7 @@
 
 package me.boomboompower.textdisplayer.gui;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 import me.boomboompower.textdisplayer.gui.utils.ModernButton;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 
@@ -64,8 +64,8 @@ public class ClearGui extends GuiScreen {
 
         drawTitle("Message clear confirmation");
 
-        drawCenteredString(mc.fontRendererObj, String.format("Are you sure you wish to clear %s %s from the screen?", ChatColor.GOLD.toString() + TextDisplayer.getInstance().getLoader().getMessages().size() + ChatColor.WHITE,
-                TextDisplayer.getInstance().getLoader().getMessages().size() == 1 ? "entry" : "entries"),
+        drawCenteredString(this.mc.fontRendererObj, String.format("Are you sure you wish to clear %s %s from the screen?", ChatColor.GOLD.toString() + TextDisplayerMod.getInstance().getLoader().getMessages().size() + ChatColor.WHITE,
+                TextDisplayerMod.getInstance().getLoader().getMessages().size() == 1 ? "entry" : "entries"),
                 this.width / 2, this.height / 2 - 40, Color.WHITE.getRGB()
         );
 
@@ -86,7 +86,7 @@ public class ClearGui extends GuiScreen {
 
     @Override
     public void sendChatMessage(String msg) {
-        TextDisplayer.getInstance().sendMessage(msg);
+        TextDisplayerMod.getInstance().sendMessage(msg);
     }
 
     @Override
@@ -110,16 +110,16 @@ public class ClearGui extends GuiScreen {
     }
 
     private void drawTitle(String text) {
-        drawCenteredString(mc.fontRendererObj, text, this.width / 2, this.height / 2 - 75, Color.WHITE.getRGB());
-        drawHorizontalLine(this.width / 2 - mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + mc.fontRendererObj.getStringWidth(text) / 2 + 5, this.height / 2 - 65, Color.WHITE.getRGB());
+        drawCenteredString(this.mc.fontRendererObj, text, this.width / 2, this.height / 2 - 75, Color.WHITE.getRGB());
+        drawHorizontalLine(this.width / 2 - this.mc.fontRendererObj.getStringWidth(text) / 2 - 5, this.width / 2 + this.mc.fontRendererObj.getStringWidth(text) / 2 + 5, this.height / 2 - 65, Color.WHITE.getRGB());
     }
 
     private void clear() {
         boolean failed = false;
 
-        TextDisplayer.getInstance().getLoader().getMessages().clear();
+        TextDisplayerMod.getInstance().getLoader().getMessages().clear();
         try {
-            FileUtils.deleteDirectory(TextDisplayer.getInstance().getLoader().getMainDir());
+            FileUtils.deleteDirectory(TextDisplayerMod.getInstance().getLoader().getMainDir());
         } catch (IOException ex) {
             failed = true;
         }
@@ -133,10 +133,10 @@ public class ClearGui extends GuiScreen {
     }
 
     private void displayPrevious(String message) {
-        if (previousScreen instanceof MainGui) {
-            mc.displayGuiScreen(new MainGui(message));
+        if (this.previousScreen instanceof MainGui) {
+            this.mc.displayGuiScreen(new MainGui(message));
         } else {
-            mc.displayGuiScreen(previousScreen);
+            this.mc.displayGuiScreen(this.previousScreen);
         }
     }
 }

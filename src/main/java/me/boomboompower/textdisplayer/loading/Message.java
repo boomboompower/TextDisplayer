@@ -19,7 +19,7 @@ package me.boomboompower.textdisplayer.loading;
 
 import com.google.gson.JsonObject;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
 import me.boomboompower.textdisplayer.utils.MessageHelper;
@@ -28,6 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
@@ -68,11 +69,11 @@ public class Message {
         this.a = object.has("a") && object.get("a").getAsBoolean();
         this.b = !object.has("b") || object.get("b").getAsBoolean();
         this.c = !object.has("c") || object.get("c").getAsBoolean();
-        this.scale = object.has("scale") ? object.get("scale").getAsFloat() : 1;
+        this.scale = object.has("scale") ? MessageHelper.cap(object.get("scale").getAsFloat(), 1, 2) : 1;
         this.x = object.has("x") ? object.get("x").getAsInt() : 0;
         this.y = object.has("y") ? object.get("y").getAsInt() : 0;
 
-        this.fileLocation = TextDisplayer.getInstance().getLoader().getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
+        this.fileLocation = TextDisplayerMod.getInstance().getLoader().getMainDir().getPath() + "\\" + formatName(this.name).toLowerCase() + ".info";
     }
 
     /*
@@ -88,8 +89,8 @@ public class Message {
             return;
         }
         try {
-            if (!TextDisplayer.getInstance().getLoader().getMainDir().exists()) {
-                TextDisplayer.getInstance().getLoader().getMainDir().mkdirs();
+            if (!TextDisplayerMod.getInstance().getLoader().getMainDir().exists()) {
+                TextDisplayerMod.getInstance().getLoader().getMainDir().mkdirs();
             }
             JsonObject config = new JsonObject();
             File configFile = new File(fileLocation);
@@ -125,7 +126,7 @@ public class Message {
 
         try {
             FileUtils.forceDelete(new File(fileLocation));
-            TextDisplayer.getInstance().getLoader().getMessages().remove(this);
+            TextDisplayerMod.getInstance().getLoader().getMessages().remove(this);
         } catch (Exception ex) {
             failed = true;
         }

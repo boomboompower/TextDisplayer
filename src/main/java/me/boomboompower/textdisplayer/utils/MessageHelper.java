@@ -49,4 +49,8 @@ public abstract class MessageHelper {
     public static char getRandomSingleNumber() {
         return numbers[rand.nextInt(numbers.length)];
     }
+
+    public static float cap(float valueIn, float minValue, float maxValue) {
+        return valueIn < minValue ? minValue : valueIn > maxValue ? maxValue : valueIn;
+    }
 }

@@ -37,7 +37,7 @@ public class TextEvents {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onGameTick(TickEvent.RenderTickEvent event) {
-        if (TextDisplayer.getInstance().getWebsiteUtils().isDisabled()) return;
+        if (TextDisplayerMod.getInstance().getWebsiteUtils().isDisabled()) return;
 
         if (mc.currentScreen != null) {
             if (this.mc.currentScreen instanceof MainGui) {
@@ -47,13 +47,13 @@ public class TextEvents {
                 }
             }
         } else if (this.mc.inGameHasFocus && !this.mc.gameSettings.showDebugInfo && mc.thePlayer != null) {
-            TextDisplayer.getInstance().getLoader().renderAll(false);
+            TextDisplayerMod.getInstance().getLoader().renderAll(false);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onJoin(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        WebsiteUtils utils = TextDisplayer.getInstance().getWebsiteUtils();
+        WebsiteUtils utils = TextDisplayerMod.getInstance().getWebsiteUtils();
 
         if (utils.isDisabled()) return;
 

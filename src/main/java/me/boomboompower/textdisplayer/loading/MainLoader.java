@@ -20,7 +20,7 @@ package me.boomboompower.textdisplayer.loading;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 
 import net.minecraft.client.Minecraft;
 
@@ -36,7 +36,7 @@ public class MainLoader {
     private ArrayList<Message> messages = new ArrayList<>();
 
     public MainLoader() {
-        this(new File(".", "mods\\" + TextDisplayer.MODID + "\\"));
+        this(new File(".", "mods\\" + TextDisplayerMod.MODID + "\\"));
     }
 
     public MainLoader(File mainDir) {

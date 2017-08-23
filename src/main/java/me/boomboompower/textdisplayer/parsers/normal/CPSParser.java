@@ -17,7 +17,7 @@
 
 package me.boomboompower.textdisplayer.parsers.normal;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.parsers.ParsedMessage;
 
@@ -72,7 +72,7 @@ public class CPSParser extends MessageParser {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onTick(TickEvent.RenderTickEvent event) {
-        if (TextDisplayer.getInstance().getWebsiteUtils().isDisabled()) return;
+        if (TextDisplayerMod.getInstance().getWebsiteUtils().isDisabled()) return;
 
         boolean isClickedLeft = Mouse.isButtonDown(0);
         if (isClickedLeft != this.lastLeft) {

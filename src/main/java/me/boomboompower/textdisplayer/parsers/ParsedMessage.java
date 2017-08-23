@@ -25,7 +25,7 @@ public class ParsedMessage {
     private int id;
 
     public ParsedMessage(String input) {
-        if (!isValidAndNotEmpty(input)) {
+        if (!isValid(input)) {
             throw new IllegalArgumentException("Input cannot be null or empty!");
         }
 

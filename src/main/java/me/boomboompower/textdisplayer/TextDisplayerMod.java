@@ -31,8 +31,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = TextDisplayer.MODID, version = TextDisplayer.VERSION, acceptedMinecraftVersions="*")
-public class TextDisplayer {
+@Mod(modid = TextDisplayerMod.MODID, version = TextDisplayerMod.VERSION, acceptedMinecraftVersions="*")
+public class TextDisplayerMod {
 
     public static final String MODID = "textdisplayer";
     public static final String VERSION = "1.2.0";
@@ -45,7 +45,7 @@ public class TextDisplayer {
     private TextEvents events;
 
     @Mod.Instance
-    private static TextDisplayer instance;
+    private static TextDisplayerMod instance;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -83,10 +83,10 @@ public class TextDisplayer {
         try {
             message = String.format(message, replacements);
         } catch (Exception ex) { }
-        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextDisplayer.PREFIX + ChatColor.translateAlternateColorCodes('&', message)));
+        Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextDisplayerMod.PREFIX + ChatColor.translateAlternateColorCodes('&', message)));
     }
 
-    public static TextDisplayer getInstance() {
+    public static TextDisplayerMod getInstance() {
         return instance;
     }
 }
