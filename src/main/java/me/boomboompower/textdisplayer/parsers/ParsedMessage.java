@@ -17,9 +17,12 @@
 
 package me.boomboompower.textdisplayer.parsers;
 
+import me.boomboompower.textdisplayer.utils.MessageHelper;
+
 public class ParsedMessage {
 
     private String input;
+    private int id;
 
     public ParsedMessage(String input) {
         if (!isValidAndNotEmpty(input)) {
@@ -27,6 +30,7 @@ public class ParsedMessage {
         }
 
         this.input = input;
+        this.id = MessageHelper.getRandomNumber(100);
     }
 
     public ParsedMessage replace(String key, String value) {
@@ -34,7 +38,7 @@ public class ParsedMessage {
             throw new IllegalArgumentException("Key or value cannot be null!");
         }
 
-        this.input = input.replaceAll("\\{" + key + "}", value);
+        this.input = this.input.replaceAll("\\{" + key + "}", value);
 
         return this;
     }
@@ -49,6 +53,15 @@ public class ParsedMessage {
 
     public String getMessage() {
         return this.input;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ParsedMessage && ((ParsedMessage) obj).getId() == getId();
     }
 
     private boolean isValid(String input) {

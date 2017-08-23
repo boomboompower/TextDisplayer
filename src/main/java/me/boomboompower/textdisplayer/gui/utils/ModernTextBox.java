@@ -294,66 +294,53 @@ public class ModernTextBox extends Gui {
     /**
      * Call this method from your GuiScreen to process the keys into the textbox
      */
-    public boolean textboxKeyTyped(char c, int keyCode) {
-        if (!this.isFocused) {
-            return false;
-        } else if (GuiScreen.isKeyComboCtrlA(keyCode)) {
+    public void textboxKeyTyped(char c, int keyCode) {
+        if (GuiScreen.isKeyComboCtrlA(keyCode)) {
             this.setCursorPositionEnd();
             this.setSelectionPos(0);
-            return true;
         } else if (GuiScreen.isKeyComboCtrlC(keyCode)) {
             GuiScreen.setClipboardString(this.getSelectedText());
-            return true;
         } else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
             if (this.isEnabled) {
                 this.writeText(GuiScreen.getClipboardString());
             }
-
-            return true;
         } else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
             GuiScreen.setClipboardString(this.getSelectedText());
 
             if (this.isEnabled) {
                 this.writeText("");
             }
-            return true;
         } else {
             switch (keyCode) {
                 case 14:
                     if (GuiScreen.isCtrlKeyDown()) {
                         if (this.isEnabled) {
-                            this.deleteWords( -1);
+                            this.deleteWords(-1);
                         }
+                    } else if (this.isEnabled) {
+                        this.deleteFromCursor(-1);
                     }
-                    else if (this.isEnabled) {
-                        this.deleteFromCursor( -1);
-                    }
-
-                    return true;
+                    return;
                 case 199:
                     if (GuiScreen.isShiftKeyDown()) {
                         this.setSelectionPos(0);
                     } else {
                         this.setCursorPositionZero();
                     }
-                    return true;
+                    return;
                 case 203:
                     if (GuiScreen.isShiftKeyDown()) {
                         if (GuiScreen.isCtrlKeyDown()) {
-                            this.setSelectionPos(this.getNthWordFromPos( -1, this.getSelectionEnd()));
+                            this.setSelectionPos(this.getNthWordFromPos(-1, this.getSelectionEnd()));
+                        } else {
+                            this.setSelectionPos(this.getSelectionEnd() - 1);
                         }
-                        else {
-                            this.setSelectionPos(this.getSelectionEnd() -1);
-                        }
+                    } else if (GuiScreen.isCtrlKeyDown()) {
+                        this.setCursorPosition(this.getNthWordFromCursor(-1));
+                    } else {
+                        this.moveCursorBy(-1);
                     }
-                    else if (GuiScreen.isCtrlKeyDown()) {
-                        this.setCursorPosition(this.getNthWordFromCursor( -1));
-                    }
-                    else {
-                        this.moveCursorBy( -1);
-                    }
-
-                    return true;
+                    return;
                 case 205:
                     if (GuiScreen.isShiftKeyDown()) {
                         if (GuiScreen.isCtrlKeyDown()) {
@@ -366,14 +353,14 @@ public class ModernTextBox extends Gui {
                     } else {
                         this.moveCursorBy(1);
                     }
-                    return true;
+                    return;
                 case 207:
                     if (GuiScreen.isShiftKeyDown()) {
                         this.setSelectionPos(this.text.length());
                     } else {
                         this.setCursorPositionEnd();
                     }
-                    return true;
+                    return;
                 case 211:
                     if (GuiScreen.isCtrlKeyDown()) {
                         if (this.isEnabled) {
@@ -382,15 +369,12 @@ public class ModernTextBox extends Gui {
                     } else if (this.isEnabled) {
                         this.deleteFromCursor(1);
                     }
-                    return true;
+                    return;
                 default:
                     if (ChatAllowedCharacters.isAllowedCharacter(c)) {
                         if (this.isEnabled) {
                             this.writeText(Character.toString(c));
                         }
-                        return true;
-                    } else {
-                        return false;
                     }
             }
         }
@@ -434,15 +418,15 @@ public class ModernTextBox extends Gui {
             int i = this.isEnabled ? this.enabledColor : this.disabledColor;
             int j = this.cursorPosition - this.lineScrollOffset;
             int k = this.selectionEnd - this.lineScrollOffset;
-            String s = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getWidth());
-            boolean flag = j >= 0 && j <= s.length();
+            String displayString = this.fontRendererInstance.trimStringToWidth(this.text.substring(this.lineScrollOffset), this.getWidth());
+            boolean flag = j >= 0 && j <= displayString.length();
             boolean flag1 = this.isFocused && this.cursorCounter / 6 % 2 == 0 && flag;
             int l = this.enableBackgroundDrawing ? this.xPosition + 4 : this.xPosition;
             int i1 = this.enableBackgroundDrawing ? this.yPosition + (this.height - 8) / 2 : this.yPosition;
             int j1 = l;
 
-            if (k > s.length()) {
-                k = s.length();
+            if (k > displayString.length()) {
+                k = displayString.length();
             }
 
             if (!alertMessage.isEmpty()) {
@@ -450,13 +434,13 @@ public class ModernTextBox extends Gui {
                 return;
             }
 
-            if (s.isEmpty() && !isFocused && isEnabled) {
+            if (displayString.isEmpty() && !isFocused && isEnabled) {
                 this.fontRendererInstance.drawString("Write here!", ((this.xPosition + this.width / 2) - fontRendererInstance.getStringWidth("Write here!") / 2), this.yPosition + this.height / 2 - 4, i, false);
                 return;
             }
 
-            if (s.length() > 0) {
-                String s1 = flag ? s.substring(0, j) : s;
+            if (displayString.length() > 0) {
+                String s1 = flag ? displayString.substring(0, j) : displayString;
                 j1 = this.fontRendererInstance.drawString(s1, (float) l, (float) i1, i, false);
             }
 
@@ -469,8 +453,8 @@ public class ModernTextBox extends Gui {
                 k1 = j1 -1; --j1;
             }
 
-            if (s.length() > 0 && flag && j < s.length()) {
-                this.fontRendererInstance.drawString(s.substring(j), (float) j1, (float) i1, i, false);
+            if (displayString.length() > 0 && flag && j < displayString.length()) {
+                this.fontRendererInstance.drawString(displayString.substring(j), (float) j1, (float) i1, i, false);
             }
 
             if (flag1) {
@@ -483,7 +467,7 @@ public class ModernTextBox extends Gui {
             }
 
             if (k != j) {
-                int l1 = l + this.fontRendererInstance.getStringWidth(s.substring(0, k));
+                int l1 = l + this.fontRendererInstance.getStringWidth(displayString.substring(0, k));
                 this.drawCursorVertical(k1, i1 -1, l1 -1, i1 + 1 + this.fontRendererInstance.FONT_HEIGHT);
             }
         }

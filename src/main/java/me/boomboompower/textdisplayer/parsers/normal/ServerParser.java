@@ -46,7 +46,7 @@ public class ServerParser extends MessageParser {
     public ParsedMessage parse(final ParsedMessage message) {
         return message.replace("SERVERNAME", getServerData(ServerDataType.NAME))
                 .replace("SERVERIP", getServerData(ServerDataType.ADDRESS))
-                .replace("SERVERPING", getServerData(ServerDataType.PING))
+                //.replace("SERVERPING", getServerData(ServerDataType.PING))
                 .replace("SERVERPOPULATION", getServerData(ServerDataType.POPULATION))
                 .replace("PLAYERCOUNT", getPlayerCount());
     }

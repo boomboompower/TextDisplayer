@@ -19,6 +19,7 @@ package me.boomboompower.textdisplayer.parsers;
 
 import me.boomboompower.textdisplayer.parsers.normal.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -34,6 +35,8 @@ public abstract class MessageParser {
 
     /**
      * Default constructor for MessageParser
+     *
+     * Should be used with MinecraftForge#registerEvents(this);
      */
     public MessageParser() {
     }
@@ -67,10 +70,15 @@ public abstract class MessageParser {
         parsers.put("DirectionParser", new DirectionParser());
         parsers.put("CPSParser", new CPSParser());
         parsers.put("FightingParser", new FightingParser());
+        parsers.put("ServerParser", new ServerParser());
     }
 
     public static MessageParser getParser(String name) {
         return parsers.getOrDefault(name, null);
+    }
+
+    public static boolean hasParser(String name) {
+        return parsers.containsKey(name);
     }
 
     /**
@@ -87,4 +95,14 @@ public abstract class MessageParser {
      * @return the formatted message
      */
     public abstract ParsedMessage parse(final ParsedMessage parsedMessage);
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MessageParser && ((MessageParser) obj).getName().equals(getName());
+    }
+
+    @Override
+    public String toString() {
+        return "MessageParser{parsers=" + Arrays.toString(parsers.keySet().toArray()) + '}';
+    }
 }
