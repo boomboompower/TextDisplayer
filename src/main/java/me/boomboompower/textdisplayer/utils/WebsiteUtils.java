@@ -20,7 +20,7 @@ package me.boomboompower.textdisplayer.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import me.boomboompower.textdisplayer.TextDisplayer;
+import me.boomboompower.textdisplayer.TextDisplayerMod;
 
 import net.minecraft.client.Minecraft;
 
@@ -65,7 +65,7 @@ public class WebsiteUtils {
             modVersionChecker = schedule(() -> {
                 JsonObject object = new JsonParser().parse(rawWithAgent("https://gist.githubusercontent.com/boomboompower/03cf19715bb0b11173908016c3313349/raw/update.json")).getAsJsonObject();
                 if (object.has("success") && object.get("success").getAsBoolean()) {
-                    int currentVersion = formatVersion(TextDisplayer.VERSION);
+                    int currentVersion = formatVersion(TextDisplayerMod.VERSION);
                     int latestVersion = object.has("latest-version") ? formatVersion(object.get("latest-version").getAsString()) : -1;
                     if (currentVersion < latestVersion && latestVersion > 0) {
                         needsUpdate = true;
