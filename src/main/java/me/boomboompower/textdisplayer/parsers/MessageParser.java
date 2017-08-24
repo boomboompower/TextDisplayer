@@ -48,10 +48,13 @@ public abstract class MessageParser {
      * @return the formatted text
      */
     public static String parseAll(String input) {
+        ParsedMessage message = new ParsedMessage(input);
         for (MessageParser parser : parsers.values()) {
-            input = parser.parse(new ParsedMessage(input)).getMessage();
+            if (parser.parse(message).getId() != message.getId()) {
+                throw new IllegalStateException("ParsedMessage appears to be modifed, use .replace instead!");
+            }
         }
-        return input;
+        return message.getMessage();
     }
 
     /**
