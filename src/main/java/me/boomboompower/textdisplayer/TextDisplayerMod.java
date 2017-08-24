@@ -21,8 +21,8 @@ import me.boomboompower.textdisplayer.commands.TextCommand;
 import me.boomboompower.textdisplayer.loading.MainLoader;
 import me.boomboompower.textdisplayer.parsers.MessageParser;
 import me.boomboompower.textdisplayer.utils.ChatColor;
-
 import me.boomboompower.textdisplayer.utils.WebsiteUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -35,7 +35,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class TextDisplayerMod {
 
     public static final String MODID = "textdisplayer";
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "2.0.0";
     public static final String PREFIX = ChatColor.GOLD + "TextDisplayer" + ChatColor.AQUA + " > " + ChatColor.GRAY;
 
     public static final Integer MAX_CHARS = 100;

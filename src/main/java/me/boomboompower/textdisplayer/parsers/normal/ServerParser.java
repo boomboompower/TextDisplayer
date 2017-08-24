@@ -46,8 +46,6 @@ public class ServerParser extends MessageParser {
     public ParsedMessage parse(final ParsedMessage message) {
         return message.replace("SERVERNAME", getServerData(ServerDataType.NAME))
                 .replace("SERVERIP", getServerData(ServerDataType.ADDRESS))
-                //.replace("SERVERPING", getServerData(ServerDataType.PING))
-                .replace("SERVERPOPULATION", getServerData(ServerDataType.POPULATION))
                 .replace("PLAYERCOUNT", getPlayerCount());
     }
 
@@ -71,13 +69,6 @@ public class ServerParser extends MessageParser {
                 returnValue = isServerDataNull ? "Unknown" : mc.getCurrentServerData().serverName;
             case ADDRESS:
                 returnValue = isServerDataNull ? "localhost" : mc.getCurrentServerData().serverIP;
-            case PING:
-                if (!isServerDataNull) {
-                    return "0ms";
-                }
-                return "0ms";
-            case POPULATION:
-                returnValue = isServerDataNull ? "0/0" : mc.getCurrentServerData().populationInfo;
             default:
                 returnValue = "Unknown";
         }
@@ -86,8 +77,6 @@ public class ServerParser extends MessageParser {
 
     private enum ServerDataType {
         NAME,
-        PING,
-        ADDRESS,
-        POPULATION
+        ADDRESS
     }
 }

@@ -194,10 +194,12 @@ public class SettingsGui extends GuiScreen {
     private void drawMessage() {
         drawCenteredString(mc.fontRendererObj, "Message will display as", this.width / 2, this.height / 2 - 78, Color.WHITE.getRGB());
 
-        GlStateManager.pushMatrix();
-        GL11.glScaled(message.getScale(), message.getScale(), 1.0);
-        drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) ((this.width / 2) / message.getScale()), (int) ((this.height / 2 - 68) / message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
-        GlStateManager.popMatrix();
+        if (!ChatColor.formatUnformat('&', text.getText()).isEmpty()) {
+            GlStateManager.pushMatrix();
+            GL11.glScaled(message.getScale(), message.getScale(), 1.0);
+            drawCenteredString(mc.fontRendererObj, ChatColor.translateAlternateColorCodes(MessageParser.parseAll(this.text.getText())), (int) ((this.width / 2) / message.getScale()), (int) ((this.height / 2 - 68) / message.getScale()), message.isChroma() ? Message.getColor() :  Color.WHITE.getRGB(), message.useShadow());
+            GlStateManager.popMatrix();
+        }
     }
 
     private void displayPrevious(String message) {
