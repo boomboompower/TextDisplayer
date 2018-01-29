@@ -67,8 +67,10 @@ public class ServerParser extends MessageParser {
         switch (type) {
             case NAME:
                 returnValue = isServerDataNull ? "Unknown" : mc.getCurrentServerData().serverName;
+                break;
             case ADDRESS:
                 returnValue = isServerDataNull ? "localhost" : mc.getCurrentServerData().serverIP;
+                break;
             default:
                 returnValue = "Unknown";
         }
