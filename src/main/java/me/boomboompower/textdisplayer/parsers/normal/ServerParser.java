@@ -46,7 +46,8 @@ public class ServerParser extends MessageParser {
     public ParsedMessage parse(final ParsedMessage message) {
         return message.replace("SERVERNAME", getServerData(ServerDataType.NAME))
                 .replace("SERVERIP", getServerData(ServerDataType.ADDRESS))
-                .replace("PLAYERCOUNT", getPlayerCount());
+                .replace("PLAYERCOUNT", getPlayerCount())
+                .replace("PING", getPing());
     }
 
     public String getPlayerCount() {
@@ -75,6 +76,10 @@ public class ServerParser extends MessageParser {
                 returnValue = "Unknown";
         }
         return returnValue.isEmpty() ? "Unknown" : returnValue;
+    }
+
+    public String getPing() {
+        return mc.getCurrentServerData() == null ? "Unknown" : String.valueOf(mc.getCurrentServerData().pingToServer);
     }
 
     private enum ServerDataType {

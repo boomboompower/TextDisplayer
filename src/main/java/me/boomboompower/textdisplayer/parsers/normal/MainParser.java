@@ -39,6 +39,7 @@ public class MainParser extends MessageParser {
                 .replace("HEALTH", getHealth(HealthType.TOTAL))
                 .replace("HEARTS", getHealth(HealthType.HEARTS))
                 .replace("HUNGER", String.valueOf(mc.thePlayer.getFoodStats().getFoodLevel()))
+                .replace("FPS", String.valueOf(Minecraft.getDebugFPS()))
 
                 .replace("X", getCoord(Coord.X))
                 .replace("Y", getCoord(Coord.Y))
